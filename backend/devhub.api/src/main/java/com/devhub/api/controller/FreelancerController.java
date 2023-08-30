@@ -4,6 +4,8 @@ import com.devhub.api.domain.freelancer.DetailFreelancerData;
 import com.devhub.api.domain.freelancer.Freelancer;
 import com.devhub.api.domain.freelancer.CreateFreelancerData;
 import com.devhub.api.domain.freelancer.FreelancerRepository;
+import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,8 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import javax.transaction.Transactional;
-import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/freelancers")

@@ -1,10 +1,10 @@
 package com.devhub.api.domain.especialidades;
 
+import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Embeddable;
 
 @Embeddable
 @Getter

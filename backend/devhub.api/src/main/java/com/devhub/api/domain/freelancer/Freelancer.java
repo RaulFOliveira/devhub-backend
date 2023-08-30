@@ -4,10 +4,8 @@ import com.devhub.api.domain.especialidades.Especialidades;
 import com.devhub.api.domain.especialidades.EspecialidadesData;
 import com.devhub.api.domain.freelancer.CreateFreelancerData;
 import com.devhub.api.domain.funcao.Funcao;
+import jakarta.persistence.*;
 import lombok.*;
-
-import javax.persistence.*;
-import javax.validation.Valid;
 
 @Table(name="freelancers")
 @Entity(name="Freelancer")
