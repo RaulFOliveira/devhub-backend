@@ -4,6 +4,7 @@ import com.devhub.api.domain.especialidades.EspecialidadesData;
 import com.devhub.api.domain.funcao.Funcao;
 import org.hibernate.validator.constraints.br.CPF;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -26,7 +27,10 @@ public record CreateFreelancerData(
         Double valorHora,
         @NotNull
         @Valid
-        EspecialidadesData especialidades
+        EspecialidadesData especialidades,
+        @NotBlank
+        String descricao
+
 
 
 ) {

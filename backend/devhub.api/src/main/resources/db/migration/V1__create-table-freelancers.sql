@@ -7,6 +7,5 @@ create table freelancers (
     contratacoes int not null default 0,
     funcao varchar(100) not null,
     valor_hora decimal(7,2) not null,
-    especialidades varchar(255) not null,
     descricao text not null
 );
