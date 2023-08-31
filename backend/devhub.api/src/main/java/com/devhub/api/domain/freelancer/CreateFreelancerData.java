@@ -22,11 +22,11 @@ public record CreateFreelancerData(
         String email,
         @NotNull
         Funcao funcao,
-        @NotBlank
-        Double valorHora,
         @NotNull
-        @Valid
-        EspecialidadesData especialidades,
+        Double valorHora,
+//        @NotNull
+//        @Valid
+//        EspecialidadesData especialidades,
         @NotBlank
         String descricao
 
