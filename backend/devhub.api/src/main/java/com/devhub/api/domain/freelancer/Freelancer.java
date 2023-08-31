@@ -45,43 +45,25 @@ public class Freelancer {
         //        this.especialidades = new Especialidades(data.especialidades());
     }
 
-    public Long getId() {
-        return id;
+    public void atuallizarInformacoes(UpdateFreelancerData data){
+        if(data.nome() != null){
+            this.nome = data.nome();
+        }
+        if (data.telefone() != null){
+            this.telefone = data.telefone();
+        }
+        if(data.senha() != null){
+            this.telefone = data.telefone();
+        }
+        if (data.descricao() != null){
+            this.descricao = data.descricao();
+        }
+        if(data.valorHora() != null){
+            this.valorHora = data.valorHora();
+        }
     }
 
-    public String getNome() {
-        return nome;
-    }
-
-    public String getCpf() {
-        return cpf;
-    }
-
-    public String getTelefone() {
-        return telefone;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public Integer getContratacoes() {
-        return contratacoes;
-    }
-
-    public Funcao getFuncao() {
-        return funcao;
-    }
-
-    public Double getValorHora() {
-        return valorHora;
-    }
-
-    public String getDescricao() {
-        return descricao;
-    }
-
-    public Boolean getAtivo() {
-        return ativo;
+    public void excluir(){
+        this.ativo = false;
     }
 }
