@@ -53,7 +53,7 @@ public class Freelancer {
             this.telefone = data.telefone();
         }
         if(data.senha() != null){
-            this.telefone = data.telefone();
+            this.senha = data.senha();
         }
         if (data.descricao() != null){
             this.descricao = data.descricao();
