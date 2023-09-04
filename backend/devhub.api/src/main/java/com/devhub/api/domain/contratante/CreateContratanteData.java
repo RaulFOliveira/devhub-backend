@@ -1,4 +1,4 @@
-package com.devhub.api.domain.freelancer;
+package com.devhub.api.domain.contratante;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -14,11 +14,9 @@ public record CreateContratanteData(
         @CNPJ
         String cnpj,
         @NotBlank
-        @Pattern(regexp = "\\d{14}")
+        @Pattern(regexp = "\\d{11}")
         String telefone,
         @Email
-        String email,
-        @NotNull
-        Integer contratacoes
+        String email
 ) {
 }

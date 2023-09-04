@@ -1,4 +1,4 @@
-package com.devhub.api.domain.freelancer;
+package com.devhub.api.domain.contratante;
 
 public record ListContratanteData(Long id, String nome, String cnpj, String telefone, String email, Integer contratacoes) {
     public ListContratanteData(Contratante contratante) {
