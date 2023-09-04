@@ -52,9 +52,9 @@ public class Freelancer {
         if (data.telefone() != null){
             this.telefone = data.telefone();
         }
-        if(data.senha() != null){
-            this.telefone = data.telefone();
-        }
+//        if(data.senha() != null){
+//            this.senha = data.senha();
+//        }
         if (data.descricao() != null){
             this.descricao = data.descricao();
         }
@@ -65,5 +65,9 @@ public class Freelancer {
 
     public void excluir(){
         this.ativo = false;
+    }
+
+    public void ativarConta(){
+        this.ativo = true;
     }
 }

@@ -57,4 +57,12 @@ public class FreelancerController {
         return ResponseEntity.noContent().build();
     }
 
+    @PatchMapping("/{id}")
+    @Transactional
+    public ResponseEntity ativarConta(@PathVariable Long id){
+        var freelancer = repository.getReferenceById(id);
+        freelancer.ativarConta();
+        return ResponseEntity.noContent().build();
+    }
+
 }
