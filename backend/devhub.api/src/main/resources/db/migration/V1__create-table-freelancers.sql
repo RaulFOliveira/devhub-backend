@@ -1,5 +1,5 @@
 create table freelancers (
-    id bigint primary key auto_increment,
+    id_freelancer bigint primary key auto_increment,
     nome varchar(75) not null,
     cpf varchar(14) not null unique,
     telefone varchar(11) not null unique,

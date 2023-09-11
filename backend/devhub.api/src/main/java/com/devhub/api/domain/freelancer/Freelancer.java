@@ -1,32 +1,37 @@
 package com.devhub.api.domain.freelancer;
 
-import com.devhub.api.domain.especialidades.Especialidades;
-import com.devhub.api.domain.especialidades.EspecialidadesData;
-import com.devhub.api.domain.freelancer.CreateFreelancerData;
+import com.devhub.api.domain.especialidade.Especialidade;
 import com.devhub.api.domain.funcao.Funcao;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @Table(name="freelancers")
 @Entity(name="Freelancer")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode(of = "id_freelancer")
 public class Freelancer {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id_freelancer;
     private String nome;
     private String cpf;
     private String telefone;
     private String email;
     private Integer contratacoes;
+
     @Enumerated(EnumType.STRING)
     private Funcao funcao;
+
     private Double valorHora;
 
-//    @Embedded
-//    private Especialidades especialidades;
+    @JsonManagedReference
+    @OneToMany(mappedBy = "freelancer")
+    private List<Especialidade> especialidades;
+
     private String descricao;
     private Boolean ativo;
 
@@ -41,8 +46,7 @@ public class Freelancer {
         this.funcao = data.funcao();
         this.valorHora = data.valorHora();
         this.descricao = data.descricao();
-        //       TODO: validar associativa entre tecnologia e freelancer
-        //        this.especialidades = new Especialidades(data.especialidades());
+
     }
 
     public void atuallizarInformacoes(UpdateFreelancerData data){
