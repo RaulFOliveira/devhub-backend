@@ -12,7 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 
@@ -46,7 +45,7 @@ public class FreelancerController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<ListFreelancerData>> listar(@PageableDefault(size = 5, sort = {"nome"})Pageable paginacao){
+    public ResponseEntity<Page<ListFreelancerData>> listar(@PageableDefault(size = 5, sort = {"nome"}) Pageable paginacao) {
         var page = repository.findAllByAtivoTrue(paginacao).map(ListFreelancerData::new);
         return ResponseEntity.ok(page);
     }
@@ -59,7 +58,7 @@ public class FreelancerController {
 
     @PutMapping
     @Transactional
-    public ResponseEntity atualizar (@Valid @RequestBody UpdateFreelancerData data){
+    public ResponseEntity atualizar(@Valid @RequestBody UpdateFreelancerData data) {
         var freelancer = repository.getReferenceById(data.id_freelancer());
         freelancer.atuallizarInformacoes(data);
 
@@ -68,7 +67,7 @@ public class FreelancerController {
 
     @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity excluir(@PathVariable Long id){
+    public ResponseEntity excluir(@PathVariable Long id) {
         var freelancer = repository.getReferenceById(id);
         freelancer.excluir();
         return ResponseEntity.noContent().build();
@@ -76,7 +75,7 @@ public class FreelancerController {
 
     @PatchMapping("/{id}")
     @Transactional
-    public ResponseEntity ativarConta(@PathVariable Long id){
+    public ResponseEntity ativarConta(@PathVariable Long id) {
         var freelancer = repository.getReferenceById(id);
         freelancer.ativarConta();
         return ResponseEntity.noContent().build();

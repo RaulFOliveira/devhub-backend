@@ -4,18 +4,22 @@ import com.devhub.api.domain.especialidade.Especialidade;
 import com.devhub.api.domain.funcao.Funcao;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-@Table(name="freelancers")
-@Entity(name="Freelancer")
+@Table(name = "freelancers")
+@Entity(name = "Freelancer")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id_freelancer")
 public class Freelancer {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_freelancer;
     private String nome;
     private String cpf;
@@ -49,29 +53,29 @@ public class Freelancer {
 
     }
 
-    public void atuallizarInformacoes(UpdateFreelancerData data){
-        if(data.nome() != null){
+    public void atuallizarInformacoes(UpdateFreelancerData data) {
+        if (data.nome() != null) {
             this.nome = data.nome();
         }
-        if (data.telefone() != null){
+        if (data.telefone() != null) {
             this.telefone = data.telefone();
         }
 //        if(data.senha() != null){
 //            this.senha = data.senha();
 //        }
-        if (data.descricao() != null){
+        if (data.descricao() != null) {
             this.descricao = data.descricao();
         }
-        if(data.valorHora() != null){
+        if (data.valorHora() != null) {
             this.valorHora = data.valorHora();
         }
     }
 
-    public void excluir(){
+    public void excluir() {
         this.ativo = false;
     }
 
-    public void ativarConta(){
+    public void ativarConta() {
         this.ativo = true;
     }
 }

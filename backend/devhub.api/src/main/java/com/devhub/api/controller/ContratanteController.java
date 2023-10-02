@@ -1,7 +1,6 @@
 package com.devhub.api.controller;
 
 import com.devhub.api.domain.contratante.*;
-import com.devhub.api.domain.freelancer.*;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,14 +33,14 @@ public class ContratanteController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<ListContratanteData>> listar(@PageableDefault(size = 5, sort = {"nome"}) Pageable paginacao){
+    public ResponseEntity<Page<ListContratanteData>> listar(@PageableDefault(size = 5, sort = {"nome"}) Pageable paginacao) {
         var page = repository.findAllByAtivoTrue(paginacao).map(ListContratanteData::new);
-        return  ResponseEntity.ok(page);
+        return ResponseEntity.ok(page);
     }
 
     @PutMapping
     @Transactional
-    public ResponseEntity atualizar (@Valid @RequestBody UpdateContratanteData data){
+    public ResponseEntity atualizar(@Valid @RequestBody UpdateContratanteData data) {
         var contratante = repository.getReferenceById(data.id());
         contratante.atuallizarInformacoes(data);
 
@@ -50,7 +49,7 @@ public class ContratanteController {
 
     @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity excluir(@PathVariable Long id){
+    public ResponseEntity excluir(@PathVariable Long id) {
         var contratante = repository.getReferenceById(id);
         contratante.excluir();
         return ResponseEntity.noContent().build();
@@ -58,7 +57,7 @@ public class ContratanteController {
 
     @PutMapping("/{id}")
     @Transactional
-    public ResponseEntity ativarConta(@PathVariable Long id){
+    public ResponseEntity ativarConta(@PathVariable Long id) {
         var contratante = repository.getReferenceById(id);
         contratante.ativarConta();
         return ResponseEntity.noContent().build();

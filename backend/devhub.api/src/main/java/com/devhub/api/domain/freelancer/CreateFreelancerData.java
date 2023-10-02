@@ -33,6 +33,5 @@ public record CreateFreelancerData(
         String descricao
 
 
-
 ) {
 }

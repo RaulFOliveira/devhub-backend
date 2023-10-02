@@ -18,7 +18,8 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(of = "id_especialidade")
 public class Especialidade {
     @JsonIgnore
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_especialidade;
 
     private String descricao;

@@ -1,16 +1,21 @@
 package com.devhub.api.domain.contratante;
-import jakarta.persistence.*;
-import lombok.*;
 
-@Table(name="contratantes")
-@Entity(name="Contratante")
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Table(name = "contratantes")
+@Entity(name = "Contratante")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
 public class Contratante {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nome;
 
@@ -34,11 +39,11 @@ public class Contratante {
         this.contratacoes = 0;
     }
 
-    public void atuallizarInformacoes(UpdateContratanteData data){
-        if(data.nome() != null){
+    public void atuallizarInformacoes(UpdateContratanteData data) {
+        if (data.nome() != null) {
             this.nome = data.nome();
         }
-        if (data.telefone() != null){
+        if (data.telefone() != null) {
             this.telefone = data.telefone();
         }
 //        if(data.senha() != null){
@@ -47,11 +52,11 @@ public class Contratante {
 
     }
 
-    public void excluir(){
+    public void excluir() {
         this.ativo = false;
     }
 
-    public void ativarConta(){
+    public void ativarConta() {
         this.ativo = true;
     }
 
