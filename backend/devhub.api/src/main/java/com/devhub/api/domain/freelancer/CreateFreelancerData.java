@@ -30,8 +30,8 @@ public record CreateFreelancerData(
         @Valid
         List<EspecialidadeData> especialidades,
         @NotBlank
-        String descricao
-
-
+        String descricao,
+        @NotBlank
+        String senha
 ) {
 }

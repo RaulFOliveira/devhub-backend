@@ -16,6 +16,8 @@ public record CreateContratanteData(
         @Pattern(regexp = "\\d{11}")
         String telefone,
         @Email
-        String email
+        String email,
+        @NotBlank
+        String senha
 ) {
 }

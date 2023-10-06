@@ -1,5 +1,6 @@
 package com.devhub.api.domain.contratante;
 
+import com.devhub.api.domain.usuario.Usuario;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -9,34 +10,16 @@ import lombok.NoArgsConstructor;
 @Table(name = "contratantes")
 @Entity(name = "Contratante")
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
+//@NoArgsConstructor
+//@AllArgsConstructor
 @EqualsAndHashCode(of = "id")
-public class Contratante {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String nome;
+public class Contratante extends Usuario {
 
     private String cnpj;
 
-    private String telefone;
-
-    private String email;
-
-    private Integer contratacoes;
-
-    private Boolean ativo;
-
-
     public Contratante(CreateContratanteData data) {
-        this.ativo = true;
-        this.nome = data.nome();
+        super(data.nome(), data.telefone(), data.email(), data.senha());
         this.cnpj = data.cnpj();
-        this.telefone = data.telefone();
-        this.email = data.email();
-        this.contratacoes = 0;
     }
 
     public void atuallizarInformacoes(UpdateContratanteData data) {
@@ -46,9 +29,9 @@ public class Contratante {
         if (data.telefone() != null) {
             this.telefone = data.telefone();
         }
-//        if(data.senha() != null){
-//            this.senha = data.senha();
-//        }
+        if(data.senha() != null){
+            this.senha = data.senha();
+        }
 
     }
 

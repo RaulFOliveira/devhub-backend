@@ -9,7 +9,7 @@ public record ListFreelancerData(Long id_freelancer, String nome, String telefon
                                  Funcao funcao, List<Especialidade> especialidades, Double valorHora, String descricao,
                                  Boolean ativo) {
     public ListFreelancerData(Freelancer freelancer) {
-        this(freelancer.getId_freelancer(), freelancer.getNome(), freelancer.getTelefone(), freelancer.getEmail(), freelancer.getContratacoes(),
+        this(freelancer.getId(), freelancer.getNome(), freelancer.getTelefone(), freelancer.getEmail(), freelancer.getContratacoes(),
                 freelancer.getFuncao(), freelancer.getEspecialidades(), freelancer.getValorHora(), freelancer.getDescricao(), freelancer.getAtivo());
     }
 }

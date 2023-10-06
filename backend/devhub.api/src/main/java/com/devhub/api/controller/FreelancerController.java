@@ -39,7 +39,7 @@ public class FreelancerController {
             especialidadeRepository.save(especialidade);
         }
 
-        var uri = uriBuilder.path("/freelancers/{id}").buildAndExpand(freelancer.getId_freelancer()).toUri();
+        var uri = uriBuilder.path("/freelancers/{id}").buildAndExpand(freelancer.getId()).toUri();
 
         return ResponseEntity.created(uri).body(new DetailFreelancerData(freelancer));
     }

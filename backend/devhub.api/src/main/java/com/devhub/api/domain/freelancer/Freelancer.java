@@ -2,6 +2,7 @@ package com.devhub.api.domain.freelancer;
 
 import com.devhub.api.domain.especialidade.Especialidade;
 import com.devhub.api.domain.funcao.Funcao;
+import com.devhub.api.domain.usuario.Usuario;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -14,18 +15,11 @@ import java.util.List;
 @Table(name = "freelancers")
 @Entity(name = "Freelancer")
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode(of = "id_freelancer")
-public class Freelancer {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_freelancer;
-    private String nome;
+//@NoArgsConstructor
+//@AllArgsConstructor
+//@EqualsAndHashCode(of = "id_freelancer")
+public class Freelancer extends Usuario {
     private String cpf;
-    private String telefone;
-    private String email;
-    private Integer contratacoes;
 
     @Enumerated(EnumType.STRING)
     private Funcao funcao;
@@ -37,16 +31,11 @@ public class Freelancer {
     private List<Especialidade> especialidades;
 
     private String descricao;
-    private Boolean ativo;
 
 
     public Freelancer(CreateFreelancerData data) {
-        this.ativo = true;
-        this.nome = data.nome();
+        super(data.nome(), data.telefone(), data.email(), data.senha());
         this.cpf = data.cpf();
-        this.telefone = data.telefone();
-        this.email = data.email();
-        this.contratacoes = 0;
         this.funcao = data.funcao();
         this.valorHora = data.valorHora();
         this.descricao = data.descricao();
@@ -60,9 +49,9 @@ public class Freelancer {
         if (data.telefone() != null) {
             this.telefone = data.telefone();
         }
-//        if(data.senha() != null){
-//            this.senha = data.senha();
-//        }
+        if(data.senha() != null){
+            this.senha = data.senha();
+        }
         if (data.descricao() != null) {
             this.descricao = data.descricao();
         }
@@ -75,7 +64,5 @@ public class Freelancer {
         this.ativo = false;
     }
 
-    public void ativarConta() {
-        this.ativo = true;
-    }
+    public void ativarConta() { this.ativo = true; }
 }
