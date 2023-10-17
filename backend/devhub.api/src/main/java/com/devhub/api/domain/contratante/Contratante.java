@@ -2,17 +2,12 @@ package com.devhub.api.domain.contratante;
 
 import com.devhub.api.domain.usuario.Usuario;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Table(name = "contratantes")
 @Entity(name = "Contratante")
 @Getter
-//@NoArgsConstructor
-//@AllArgsConstructor
-@EqualsAndHashCode(of = "id")
+@Setter
 public class Contratante extends Usuario {
 
     private String cnpj;

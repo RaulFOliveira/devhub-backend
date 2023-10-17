@@ -4,6 +4,7 @@ create table freelancers (
     cpf varchar(14) not null unique,
     telefone varchar(11) not null unique,
     email varchar(100) not null unique,
+    senha varchar(255) not null,
     contratacoes int not null default 0,
     funcao varchar(100) not null,
     valor_hora decimal(7,2) not null,
