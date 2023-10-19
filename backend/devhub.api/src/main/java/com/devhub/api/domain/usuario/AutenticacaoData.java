@@ -1,4 +1,4 @@
 package com.devhub.api.domain.usuario;
 
-public record AutenticacaoData(String login, String senha) {
+public record AutenticacaoData(String email, String senha) {
 }
