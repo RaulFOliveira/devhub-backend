@@ -1,11 +1,12 @@
 package com.devhub.api.domain.contratante;
 
+import com.devhub.api.domain.usuario.UserRole;
 import com.devhub.api.domain.usuario.Usuario;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Table(name = "contratantes")
-@Entity(name = "Contratante")
+@Table(name = "contratante")
+@Entity()
 @Getter
 @Setter
 public class Contratante extends Usuario {
@@ -13,7 +14,7 @@ public class Contratante extends Usuario {
     private String cnpj;
 
     public Contratante(CreateContratanteData data) {
-        super(data.nome(), data.telefone(), data.email(), data.senha());
+        super(data.nome(), data.telefone(), data.email(), data.senha(), UserRole.USER);
         this.cnpj = data.cnpj();
     }
 

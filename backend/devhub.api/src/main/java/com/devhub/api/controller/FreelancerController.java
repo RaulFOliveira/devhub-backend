@@ -4,6 +4,8 @@ import com.devhub.api.domain.especialidade.Especialidade;
 import com.devhub.api.domain.especialidade.EspecialidadeData;
 import com.devhub.api.domain.especialidade.EspecialidadeRepository;
 import com.devhub.api.domain.freelancer.*;
+import com.devhub.api.domain.usuario.UserRole;
+import com.devhub.api.domain.usuario.Usuario;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,8 @@ public class FreelancerController {
     @PostMapping
     @Transactional
     public ResponseEntity createFreelancer(@Valid @RequestBody CreateFreelancerData data, UriComponentsBuilder uriBuilder) {
+
+        var usuario = new Usuario(data.nome(),data.telefone(),data.email(), data.senha(), UserRole.ADMIN);
 
         var freelancer = new Freelancer(data);
 
