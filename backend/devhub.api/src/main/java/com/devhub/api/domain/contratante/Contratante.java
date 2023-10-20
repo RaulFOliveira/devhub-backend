@@ -14,7 +14,7 @@ public class Contratante extends Usuario {
     private String cnpj;
 
     public Contratante(CreateContratanteData data) {
-        super(data.nome(), data.telefone(), data.email(), data.senha(), UserRole.USER);
+        super(data.nome(), data.telefone(), data.email(), data.senha(), UserRole.CONTRATANTE);
         this.cnpj = data.cnpj();
     }
 

@@ -4,8 +4,6 @@ import com.devhub.api.domain.especialidade.Especialidade;
 import com.devhub.api.domain.especialidade.EspecialidadeData;
 import com.devhub.api.domain.especialidade.EspecialidadeRepository;
 import com.devhub.api.domain.freelancer.*;
-import com.devhub.api.domain.usuario.UserRole;
-import com.devhub.api.domain.usuario.Usuario;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -30,9 +29,11 @@ public class FreelancerController {
     @Transactional
     public ResponseEntity createFreelancer(@Valid @RequestBody CreateFreelancerData data, UriComponentsBuilder uriBuilder) {
 
-        var usuario = new Usuario(data.nome(),data.telefone(),data.email(), data.senha(), UserRole.ADMIN);
-
         var freelancer = new Freelancer(data);
+
+        String encryptedPassword = new BCryptPasswordEncoder().encode(data.senha());
+
+        freelancer.setSenha(encryptedPassword);
 
         repository.save(freelancer);
 

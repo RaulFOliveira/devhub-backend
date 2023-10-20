@@ -10,11 +10,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
-
-@Entity
 @Getter
 @Setter
-@Inheritance(strategy = InheritanceType.JOINED)
+@MappedSuperclass
 public abstract class Usuario implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,7 +30,11 @@ public abstract class Usuario implements UserDetails {
 
     protected Boolean ativo;
 
+    @Enumerated(EnumType.STRING)
     private UserRole role;
+
+    public Usuario() {
+    }
 
     public Usuario(String nome, String telefone, String email, String senha, UserRole role) {
         this.nome = nome;
@@ -46,37 +48,37 @@ public abstract class Usuario implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if(this.role == UserRole.USER) return List.of(new SimpleGrantedAuthority("ROLE_FREELANCER"), new SimpleGrantedAuthority("ROLE_CONTRATANTE"));
+        if(this.role == UserRole.CONTRATANTE) return List.of(new SimpleGrantedAuthority("ROLE_CONTRATANTE"));
         else return List.of(new SimpleGrantedAuthority("ROLE_FREELANCER"));
     }
 
     @Override
     public String getPassword() {
-        return null;
+        return senha;
     }
 
     @Override
     public String getUsername() {
-        return null;
+        return email;
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return true;
     }
 }

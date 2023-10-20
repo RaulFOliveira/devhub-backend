@@ -21,7 +21,10 @@ public record CreateFreelancerData(
         @Pattern(regexp = "\\d{11}")
         String telefone,
         @Email
+        @NotBlank
         String email,
+        @NotBlank
+        String senha,
         @NotNull
         Funcao funcao,
         @NotNull
@@ -30,8 +33,6 @@ public record CreateFreelancerData(
         @Valid
         List<EspecialidadeData> especialidades,
         @NotBlank
-        String descricao,
-        @NotBlank
-        String senha
+        String descricao
 ) {
 }

@@ -1,8 +1,8 @@
 package com.devhub.api.domain.usuario;
 
 public enum UserRole {
-    ADMIN("freelancer"),
-    USER("contratante");
+    FREELANCER("freelancer"),
+    CONTRATANTE("contratante");
 
 
     private String role;

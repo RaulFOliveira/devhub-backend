@@ -1,6 +1,6 @@
 package com.devhub.api.domain.contratante;
 
-public record DetailContratanteData(Long id, String nome, String cnpj, String telefone, String email,
+public record DetailContratanteData(Long id_contratante, String nome, String cnpj, String telefone, String email,
                                     Integer contratacoes, Boolean ativo) {
 
     public DetailContratanteData(Contratante contratante) {

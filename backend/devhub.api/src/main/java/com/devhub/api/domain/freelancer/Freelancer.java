@@ -2,6 +2,7 @@ package com.devhub.api.domain.freelancer;
 
 import com.devhub.api.domain.especialidade.Especialidade;
 import com.devhub.api.domain.funcao.Funcao;
+import com.devhub.api.domain.login.Login;
 import com.devhub.api.domain.usuario.UserRole;
 import com.devhub.api.domain.usuario.Usuario;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -31,17 +32,21 @@ public class Freelancer extends Usuario {
 
     private String descricao;
 
-    @OneToOne
-    private Usuario fkUsuario;
+//    @OneToOne
+//    @JoinColumn(name = "usuario_id")
+//    private Login fkUsuario;
 
 
-    public Freelancer(CreateFreelancerData data, Usuario fkUsuario) {
-        super(data.nome(), data.telefone(), data.email(), data.senha(), UserRole.USER);
+    public Freelancer() {
+        super();
+    }
+
+    public Freelancer(CreateFreelancerData data) {
+        super(data.nome(), data.telefone(),data.email(), data.senha(), UserRole.FREELANCER);
         this.cpf = data.cpf();
         this.funcao = data.funcao();
         this.valorHora = data.valorHora();
         this.descricao = data.descricao();
-        this.fkUsuario = fkUsuario;
     }
 
     public void atuallizarInformacoes(UpdateFreelancerData data) {
@@ -61,6 +66,8 @@ public class Freelancer extends Usuario {
             this.valorHora = data.valorHora();
         }
     }
+
+
 
     public void excluir() {
         this.ativo = false;

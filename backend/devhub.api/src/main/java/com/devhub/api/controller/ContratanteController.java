@@ -24,6 +24,10 @@ public class ContratanteController {
     public ResponseEntity createFreelancer(@Valid @RequestBody CreateContratanteData data, UriComponentsBuilder uriBuilder) {
 
         var contratante = new Contratante(data);
+
+        String encryptedPassword = new BCryptPasswordEncoder().encode(data.senha());
+
+        contratante.setSenha(encryptedPassword);
 //        return ResponseEntity.created().
 
         repository.save(contratante);
