@@ -1,8 +1,8 @@
 package com.devhub.api.controller;
 
 import com.devhub.api.domain.usuario.AutenticacaoData;
+import com.devhub.api.domain.usuario.CreateUsuarioData;
 import com.devhub.api.domain.usuario.Usuario;
-import com.devhub.api.domain.usuario.UsuarioRepository;
 import com.devhub.api.infra.security.TokenJWTData;
 import com.devhub.api.infra.security.TokenService;
 import jakarta.validation.Valid;
@@ -10,33 +10,44 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/login")
 public class UsuarioController {
     @Autowired
-    private AuthenticationManager manager;
+    private AuthenticationManager authenticationManager;
+
     @Autowired
-    private TokenService tokenService;
+    private TokenService jwtTokenProvider;
+
 
     @PostMapping
-    public ResponseEntity login(@RequestBody @Valid AutenticacaoData data) {
+    public ResponseEntity login(@RequestBody @Valid AutenticacaoData loginRequest) {
         try {
-            var authenticationToken = new UsernamePasswordAuthenticationToken(data.email(), data.senha());
-            System.out.println("Passei da authToken: " + authenticationToken);
-            var authentication = manager.authenticate(authenticationToken);
-            System.out.println("Passei da auth");
-            var tokenJWT = tokenService.gerarToken((Usuario) authentication.getPrincipal());
-            System.out.println("Passei do tokenJWT");
+            var usernamePassword = new UsernamePasswordAuthenticationToken(loginRequest.email(),loginRequest.senha());
+            var auth = authenticationManager.authenticate(usernamePassword);
 
-            return ResponseEntity.ok(new TokenJWTData(tokenJWT));
+            var token = jwtTokenProvider.gerarToken((Usuario) auth.getPrincipal());
+
+            return ResponseEntity.ok(new TokenJWTData(token));
         } catch (Exception e) {
             return ResponseEntity.status(500).body(e.getMessage());
         }
 
     }
+
+//    @PostMapping("/register")
+//    public ResponseEntity register(@RequestBody @Valid CreateUsuarioData data){
+//        if(this.repository.findByEmail(data.email()) != null) return ResponseEntity.badRequest().build();
+//
+//        String encryptedPassword = new BCryptPasswordEncoder().encode(data.senha());
+//        Usuario newUser = new Usuario(data.nome(), data.telefone(), data.email(), data.senha(), data.role()) {
+//        };
+//
+//        this.repository.save(newUser);
+//
+//        return ResponseEntity.ok().build();
+//    }
 }

@@ -2,6 +2,8 @@ package com.devhub.api.domain.freelancer;
 
 import com.devhub.api.domain.especialidade.Especialidade;
 import com.devhub.api.domain.funcao.Funcao;
+import com.devhub.api.domain.login.Login;
+import com.devhub.api.domain.usuario.UserRole;
 import com.devhub.api.domain.usuario.Usuario;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -9,8 +11,8 @@ import lombok.*;
 
 import java.util.List;
 
-@Table(name = "freelancers")
-@Entity(name = "Freelancer")
+@Table(name = "freelancer")
+@Entity()
 @Getter
 @Setter
 public class Freelancer extends Usuario {
@@ -30,14 +32,21 @@ public class Freelancer extends Usuario {
 
     private String descricao;
 
+//    @OneToOne
+//    @JoinColumn(name = "usuario_id")
+//    private Login fkUsuario;
+
+
+    public Freelancer() {
+        super();
+    }
 
     public Freelancer(CreateFreelancerData data) {
-        super(data.nome(), data.telefone(), data.email(), data.senha());
+        super(data.nome(), data.telefone(),data.email(), data.senha(), UserRole.FREELANCER);
         this.cpf = data.cpf();
         this.funcao = data.funcao();
         this.valorHora = data.valorHora();
         this.descricao = data.descricao();
-
     }
 
     public void atuallizarInformacoes(UpdateFreelancerData data) {
@@ -57,6 +66,8 @@ public class Freelancer extends Usuario {
             this.valorHora = data.valorHora();
         }
     }
+
+
 
     public void excluir() {
         this.ativo = false;

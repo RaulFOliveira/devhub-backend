@@ -22,11 +22,12 @@ public class TokenService {
         System.out.println("Entrou no gerarToken");
         try {
             var algoritmo = Algorithm.HMAC256(secret);
-            return JWT.create()
+            String token = JWT.create()
                     .withIssuer("DevHub")
                     .withSubject(usuario.getEmail())
                     .withExpiresAt(dataExpiracao())
                     .sign(algoritmo);
+            return token;
         } catch (JWTCreationException exception){
             throw new RuntimeException("erro ao gerar token jwt", exception);
         }

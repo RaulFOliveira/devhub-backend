@@ -1,6 +1,6 @@
 package com.devhub.api.infra.security;
 
-import com.devhub.api.domain.usuario.UsuarioRepository;
+import com.devhub.api.domain.freelancer.FreelancerRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,13 +20,14 @@ public class SecurityFilter extends OncePerRequestFilter {
     private TokenService tokenService;
 
     @Autowired
-    private UsuarioRepository repository;
+    private FreelancerRepository repository;
+
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         var tokenJWT = recuperarToken(request);
         if (tokenJWT != null) {
-            var subject = tokenService.getSubject(tokenJWT);
+              var subject = tokenService.getSubject(tokenJWT);
             var user = repository.findByEmail(subject);
 
             var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
