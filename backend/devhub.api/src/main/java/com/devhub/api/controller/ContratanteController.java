@@ -28,7 +28,6 @@ public class ContratanteController {
         String encryptedPassword = new BCryptPasswordEncoder().encode(data.senha());
 
         contratante.setSenha(encryptedPassword);
-//        return ResponseEntity.created().
 
         repository.save(contratante);
 
