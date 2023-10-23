@@ -17,7 +17,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 
 @RestController
-@RequestMapping("/freelancers")
+@RequestMapping(value = "/freelancers", produces = {"application/json"})
+@Tag(name = "Api DevHub")
 public class FreelancerController {
 
     @Autowired
@@ -25,8 +26,17 @@ public class FreelancerController {
     @Autowired
     private EspecialidadeRepository especialidadeRepository;
 
-    @PostMapping
     @Transactional
+    @Operation(summary = "Realiza a criaçao do freelancer", method = "POST")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "o"),
+            @ApiResponse(responseCode = "422", description = "Dados de requisição inválida"),
+            @ApiResponse(responseCode = "400", description = "Parametros inválidos"),
+            @ApiResponse(responseCode = "500", description = "Erro ao realizar a validaçao do token"),
+    })
+
+    @PostMapping(consumes = MediaType.APPLICATION_JSON)
+
     public ResponseEntity createFreelancer(@Valid @RequestBody CreateFreelancerData data, UriComponentsBuilder uriBuilder) {
 
         var freelancer = new Freelancer(data);
@@ -49,41 +59,84 @@ public class FreelancerController {
         return ResponseEntity.created(uri).body(new DetailFreelancerData(freelancer));
     }
 
-    @GetMapping
+    @Operation(summary = "Realiza a listagenm dos Freelancers", method = "GET")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Freelancers listados com sucesso"),
+            @ApiResponse(responseCode = "422", description = "Dados de requisição inválida"),
+            @ApiResponse(responseCode = "400", description = "Parametros inválidos"),
+            @ApiResponse(responseCode = "500", description = "Erro ao realizar a listagem dos Freelancers"),
+    })
+
+    @GetMapping(consumes = MediaType.APPLICATION_JSON)
+
     public ResponseEntity<Page<ListFreelancerData>> listar(@PageableDefault(size = 5, sort = {"nome"}) Pageable paginacao) {
         var page = repository.findAllByAtivoTrue(paginacao).map(ListFreelancerData::new);
         return ResponseEntity.ok(page);
     }
 
-    @GetMapping("/{id}")
+    @Operation(summary = "Realiza a listagenm de um Freelancer especifico por ID", method = "GET")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Freelancer listado com sucesso"),
+            @ApiResponse(responseCode = "422", description = "Dados de requisição inválida"),
+            @ApiResponse(responseCode = "400", description = "Parametros inválidos"),
+            @ApiResponse(responseCode = "500", description = "Erro ao realizar a listagem do freelancer respectivo"),
+    })
+
+    @GetMapping("/{id}",consumes = MediaType.APPLICATION_JSON)
+
     public ResponseEntity<ListFreelancerData> listarFreelancerById(@PathVariable Long id) {
         var freelancer = repository.getReferenceById(id);
         return ResponseEntity.ok(new ListFreelancerData(freelancer));
     }
 
-    @PutMapping
     @Transactional
-    public ResponseEntity atualizar(@Valid @RequestBody UpdateFreelancerData data) {
+    @Operation(summary = "Realiza a atualizaçao de um dos freelancers", method = "PUT")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Freelancer atualizado com sucesso"),
+            @ApiResponse(responseCode = "422", description = "Dados de requisição inválida"),
+            @ApiResponse(responseCode = "400", description = "Parametros inválidos"),
+            @ApiResponse(responseCode = "500", description = "Erro ao realizar a atualizaçao do freelancer"),
+    })
+
+    @PutMapping(consumes = MediaType.APPLICATION_JSON)
+
+    public ResponseEntity atualizar(@Valid @RequestBody ("dados") UpdateFreelancerData data) {
         var freelancer = repository.getReferenceById(data.id_freelancer());
         freelancer.atuallizarInformacoes(data);
 
         return ResponseEntity.ok(new DetailFreelancerData(freelancer));
     }
 
-    @DeleteMapping("/{id}")
     @Transactional
+    @Operation(summary = "Realiza a exclusao de um freelancer", method = "DELETE")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Freelancer excluido com sucesso"),
+            @ApiResponse(responseCode = "422", description = "Dados de requisição inválida"),
+            @ApiResponse(responseCode = "400", description = "Parametros inválidos"),
+            @ApiResponse(responseCode = "500", description = "Erro ao realizar a exclusao de um Freelancer"),
+    })
+    @DeleteMapping("/{id}",consumes = MediaType.APPLICATION_JSON)
+
     public ResponseEntity excluir(@PathVariable Long id) {
         var freelancer = repository.getReferenceById(id);
         freelancer.excluir();
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/{id}")
     @Transactional
+    @Operation(summary = "Realiza a ativaçao de uma conta de Freelancer", method = "PATCH")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Conta ativada com sucesso"),
+            @ApiResponse(responseCode = "422", description = "Dados de requisição inválida"),
+            @ApiResponse(responseCode = "400", description = "Parametros inválidos"),
+            @ApiResponse(responseCode = "500", description = "Erro ao realizar a ativaçao da conta"),
+    })
+
+    @Patchapping("{/id}", consumes = MediaType.APPLICATION_JSON)
+
     public ResponseEntity ativarConta(@PathVariable Long id) {
         var freelancer = repository.getReferenceById(id);
         freelancer.ativarConta();
         return ResponseEntity.noContent().build();
     }
-
 }

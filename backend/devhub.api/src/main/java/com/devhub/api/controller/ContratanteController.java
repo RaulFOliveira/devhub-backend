@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
-@RequestMapping("/contratantes")
+@RequestMapping(value = "/contratantes", produces = {"application/json"})
+@Tag(name = "Api DevHub")
 public class ContratanteController {
 
     @Autowired
@@ -21,7 +22,17 @@ public class ContratanteController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity createFreelancer(@Valid @RequestBody CreateContratanteData data, UriComponentsBuilder uriBuilder) {
+    @Operation(summary = "Realiza a criaçao do Contratante", method = "POST")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Contratante criado com sucesso"),
+            @ApiResponse(responseCode = "422", description = "Dados de requisição inválida"),
+            @ApiResponse(responseCode = "400", description = "Parametros inválidos"),
+            @ApiResponse(responseCode = "500", description = "Erro ao realizar a criaçao de um novo contratante"),
+    })
+
+    @PostMapping(consumes = MediaType.APPLICATION_JSON)
+
+    public ResponseEntity createContratante(@Valid @RequestBody CreateContratanteData data, UriComponentsBuilder uriBuilder) {
 
         var contratante = new Contratante(data);
 
@@ -36,14 +47,32 @@ public class ContratanteController {
         return ResponseEntity.created(uri).body(new DetailContratanteData(contratante));
     }
 
-    @GetMapping
+    @Operation(summary = "Realiza a listagenm dos Contratantes", method = "GET")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Contratante listados com sucesso"),
+            @ApiResponse(responseCode = "422", description = "Dados de requisição inválida"),
+            @ApiResponse(responseCode = "400", description = "Parametros inválidos"),
+            @ApiResponse(responseCode = "500", description = "Erro ao realizar a listagem dos contratantes"),
+    })
+
+    @GetMapping(consumes = MediaType.APPLICATION_JSON)
+
     public ResponseEntity<Page<ListContratanteData>> listar(@PageableDefault(size = 5, sort = {"nome"}) Pageable paginacao) {
         var page = repository.findAllByAtivoTrue(paginacao).map(ListContratanteData::new);
         return ResponseEntity.ok(page);
     }
 
-    @PutMapping
     @Transactional
+    @Operation(summary = "Realiza a atualizaçao de um dos Contratantes", method = "PUT")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Contratante atualizado com sucesso"),
+            @ApiResponse(responseCode = "422", description = "Dados de requisição inválida"),
+            @ApiResponse(responseCode = "400", description = "Parametros inválidos"),
+            @ApiResponse(responseCode = "500", description = "Erro ao realizar a atualizaçao do contratante"),
+    })
+
+    @PutMapping(consumes = MediaType.APPLICATION_JSON)
+
     public ResponseEntity atualizar(@Valid @RequestBody UpdateContratanteData data) {
         var contratante = repository.getReferenceById(data.id());
         contratante.atuallizarInformacoes(data);
@@ -51,16 +80,34 @@ public class ContratanteController {
         return ResponseEntity.ok(new DetailContratanteData(contratante));
     }
 
-    @DeleteMapping("/{id}")
     @Transactional
+    @Operation(summary = "Realiza a exclusao de um contratante", method = "DELETE")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Contratante excluido com sucesso"),
+            @ApiResponse(responseCode = "422", description = "Dados de requisição inválida"),
+            @ApiResponse(responseCode = "400", description = "Parametros inválidos"),
+            @ApiResponse(responseCode = "500", description = "Erro ao realizar a exclusao de um contratante"),
+    })
+
+    @DeleteMapping("/{id}", consumes = MediaType.APPLICATION_JSON)
+
     public ResponseEntity excluir(@PathVariable Long id) {
         var contratante = repository.getReferenceById(id);
         contratante.excluir();
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/{id}")
     @Transactional
+    @Operation(summary = "Realiza a ativaçao de uma conta de Contratante", method = "PATCH")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Conta ativada com sucesso"),
+            @ApiResponse(responseCode = "422", description = "Dados de requisição inválida"),
+            @ApiResponse(responseCode = "400", description = "Parametros inválidos"),
+            @ApiResponse(responseCode = "500", description = "Erro ao realizar a ativaçao da conta"),
+    })
+
+    @Patchapping("{/id}", consumes = MediaType.APPLICATION_JSON)
+
     public ResponseEntity ativarConta(@PathVariable Long id) {
         var contratante = repository.getReferenceById(id);
         contratante.ativarConta();
