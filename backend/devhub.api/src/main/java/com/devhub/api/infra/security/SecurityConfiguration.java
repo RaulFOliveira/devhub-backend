@@ -30,6 +30,8 @@ public class SecurityConfiguration {
                     req.requestMatchers(HttpMethod.POST, "/freelancers").permitAll();
                     req.requestMatchers(HttpMethod.POST, "/contratantes").permitAll();
                     req.requestMatchers(HttpMethod.GET,"/swagger-ui/**").permitAll();
+                    req.requestMatchers("/v3/api-docs/**").permitAll();
+                    req.requestMatchers("/swagger-resources/**").permitAll();
                     req.anyRequest().authenticated();
                 })
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
