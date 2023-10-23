@@ -4,12 +4,17 @@ import com.devhub.api.domain.especialidade.Especialidade;
 import com.devhub.api.domain.especialidade.EspecialidadeData;
 import com.devhub.api.domain.especialidade.EspecialidadeRepository;
 import com.devhub.api.domain.freelancer.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -35,7 +40,7 @@ public class FreelancerController {
             @ApiResponse(responseCode = "500", description = "Erro ao realizar a validaçao do token"),
     })
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON)
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
 
     public ResponseEntity createFreelancer(@Valid @RequestBody CreateFreelancerData data, UriComponentsBuilder uriBuilder) {
 
@@ -66,9 +71,7 @@ public class FreelancerController {
             @ApiResponse(responseCode = "400", description = "Parametros inválidos"),
             @ApiResponse(responseCode = "500", description = "Erro ao realizar a listagem dos Freelancers"),
     })
-
-    @GetMapping(consumes = MediaType.APPLICATION_JSON)
-
+    @GetMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Page<ListFreelancerData>> listar(@PageableDefault(size = 5, sort = {"nome"}) Pageable paginacao) {
         var page = repository.findAllByAtivoTrue(paginacao).map(ListFreelancerData::new);
         return ResponseEntity.ok(page);
@@ -82,8 +85,7 @@ public class FreelancerController {
             @ApiResponse(responseCode = "500", description = "Erro ao realizar a listagem do freelancer respectivo"),
     })
 
-    @GetMapping("/{id}",consumes = MediaType.APPLICATION_JSON)
-
+    @GetMapping(value = "/{id}",consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ListFreelancerData> listarFreelancerById(@PathVariable Long id) {
         var freelancer = repository.getReferenceById(id);
         return ResponseEntity.ok(new ListFreelancerData(freelancer));
@@ -97,10 +99,8 @@ public class FreelancerController {
             @ApiResponse(responseCode = "400", description = "Parametros inválidos"),
             @ApiResponse(responseCode = "500", description = "Erro ao realizar a atualizaçao do freelancer"),
     })
-
-    @PutMapping(consumes = MediaType.APPLICATION_JSON)
-
-    public ResponseEntity atualizar(@Valid @RequestBody ("dados") UpdateFreelancerData data) {
+    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity atualizar(@Valid @RequestBody UpdateFreelancerData data) {
         var freelancer = repository.getReferenceById(data.id_freelancer());
         freelancer.atuallizarInformacoes(data);
 
@@ -115,8 +115,7 @@ public class FreelancerController {
             @ApiResponse(responseCode = "400", description = "Parametros inválidos"),
             @ApiResponse(responseCode = "500", description = "Erro ao realizar a exclusao de um Freelancer"),
     })
-    @DeleteMapping("/{id}",consumes = MediaType.APPLICATION_JSON)
-
+    @DeleteMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity excluir(@PathVariable Long id) {
         var freelancer = repository.getReferenceById(id);
         freelancer.excluir();
@@ -132,7 +131,7 @@ public class FreelancerController {
             @ApiResponse(responseCode = "500", description = "Erro ao realizar a ativaçao da conta"),
     })
 
-    @Patchapping("{/id}", consumes = MediaType.APPLICATION_JSON)
+    @PatchMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
 
     public ResponseEntity ativarConta(@PathVariable Long id) {
         var freelancer = repository.getReferenceById(id);
