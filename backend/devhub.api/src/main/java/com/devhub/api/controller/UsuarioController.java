@@ -39,16 +39,4 @@ public class UsuarioController {
 
     }
 
-//    @PostMapping("/register")
-//    public ResponseEntity register(@RequestBody @Valid CreateUsuarioData data){
-//        if(this.repository.findByEmail(data.email()) != null) return ResponseEntity.badRequest().build();
-//
-//        String encryptedPassword = new BCryptPasswordEncoder().encode(data.senha());
-//        Usuario newUser = new Usuario(data.nome(), data.telefone(), data.email(), data.senha(), data.role()) {
-//        };
-//
-//        this.repository.save(newUser);
-//
-//        return ResponseEntity.ok().build();
-//    }
 }

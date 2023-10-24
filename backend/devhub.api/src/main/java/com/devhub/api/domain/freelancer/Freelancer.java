@@ -2,7 +2,6 @@ package com.devhub.api.domain.freelancer;
 
 import com.devhub.api.domain.especialidade.Especialidade;
 import com.devhub.api.domain.funcao.Funcao;
-import com.devhub.api.domain.login.Login;
 import com.devhub.api.domain.usuario.UserRole;
 import com.devhub.api.domain.usuario.Usuario;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -31,11 +30,6 @@ public class Freelancer extends Usuario {
     private List<Especialidade> especialidades;
 
     private String descricao;
-
-//    @OneToOne
-//    @JoinColumn(name = "usuario_id")
-//    private Login fkUsuario;
-
 
     public Freelancer() {
         super();
