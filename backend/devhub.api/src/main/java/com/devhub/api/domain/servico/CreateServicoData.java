@@ -9,8 +9,7 @@ public record CreateServicoData( @NotNull(message = "A duração não pode ser n
                                  Integer duracao,
 
                                  @NotBlank(message = "As horas trabalhadas não podem estar em branco")
-                                 String horasTrabalhadas,
+                                 String horasTrabalhadas
 
-                                 @NotNull(message = "A data de criação não pode ser nula")
-                                 LocalDateTime createdAt) {
+                                ) {
 }

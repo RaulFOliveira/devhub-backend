@@ -1,5 +1,7 @@
 package com.devhub.api.domain.servico;
 
+import com.devhub.api.domain.contratante.Contratante;
+import com.devhub.api.domain.freelancer.Freelancer;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,10 +24,17 @@ public class Servico {
     private String horastrabalhadas;
     private LocalDateTime createdAt;
 
-    public Servico(CreateServicoData data) {
+    @ManyToOne
+    @JoinColumn(name = "fk_freelancer")
+    private Freelancer freelancer;
+
+    @ManyToOne
+    @JoinColumn(name = "fk_contratante")
+    private Contratante contratante;
+
+    public Servico(CreateServicoData data, Contratante contratante, Freelancer freelancer) {
         this.duracao = data.duracao();
         this.horastrabalhadas = data.horasTrabalhadas();
-        this.createdAt = data.createdAt();
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
         String dataString = LocalDateTime.now(ZoneId.of("America/Sao_Paulo")).format(dateTimeFormatter);
         this.createdAt = LocalDateTime.parse(dataString, dateTimeFormatter);
