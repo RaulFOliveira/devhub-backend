@@ -32,9 +32,9 @@ public class UsuarioController {
             // TODO: validar os dados do sessionStorage pra requests - var teste = ((Usuario) auth.getPrincipal()).getEmail();
             return ResponseEntity.ok(new TokenJWTData(token));
         } catch (UsernameNotFoundException e){
-            return ResponseEntity.status(404).body(e.getMessage());
+            return ResponseEntity.status(404).body("Email e/ou senha inválidos");
         } catch (Exception e) {
-            return ResponseEntity.status(500).body(e.getMessage());
+            return ResponseEntity.status(404).body(e.getMessage());
         }
 
     }

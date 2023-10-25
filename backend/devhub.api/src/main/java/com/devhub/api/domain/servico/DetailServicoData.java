@@ -1,10 +1,13 @@
 package com.devhub.api.domain.servico;
 
-import java.time.LocalDateTime;
+import com.devhub.api.domain.contratante.Contratante;
+import com.devhub.api.domain.freelancer.Freelancer;
 
-public record DetailServicoData(Long id, int duracao, String horasTrabalhadas, LocalDateTime createdAt ) {
+import java.time.LocalDate;
+
+public record DetailServicoData(Long id, Contratante contratante, Freelancer freelancer, Integer horasTrabalhadas, LocalDate createdAt ) {
 
     public DetailServicoData(Servico servico){
-        this(servico.getId(), servico.getDuracao(), servico.getHorastrabalhadas(), servico.getCreatedAt());
+        this(servico.getId(), servico.getContratante(), servico.getFreelancer(), servico.getHorasTrabalhadas(), servico.getCreatedAt());
     }
 }

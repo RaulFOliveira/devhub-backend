@@ -98,9 +98,9 @@ public class FreelancerController {
             @ApiResponse(responseCode = "400", description = "Parametros inválidos"),
             @ApiResponse(responseCode = "500", description = "Erro ao realizar a atualizaçao do freelancer"),
     })
-    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity atualizar(@Valid @RequestBody UpdateFreelancerData data) {
-        var freelancer = repository.getReferenceById(data.id_freelancer());
+    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity atualizar(@Valid @RequestBody UpdateFreelancerData data, @PathVariable Long id) {
+        var freelancer = repository.getReferenceById(id);
         freelancer.atuallizarInformacoes(data);
 
         return ResponseEntity.ok(new DetailFreelancerData(freelancer));

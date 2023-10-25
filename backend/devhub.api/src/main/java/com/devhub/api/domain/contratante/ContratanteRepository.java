@@ -9,4 +9,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 public interface ContratanteRepository extends JpaRepository<Contratante, Long> {
     Page<Contratante> findAllByAtivoTrue(Pageable paginacao);
     UserDetails findByEmail(String email);
+
+    Contratante findByCnpj(String cnpj);
 }

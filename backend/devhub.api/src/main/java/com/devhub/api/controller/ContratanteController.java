@@ -70,9 +70,9 @@ public class ContratanteController {
             @ApiResponse(responseCode = "400", description = "Parametros inválidos"),
             @ApiResponse(responseCode = "500", description = "Erro ao realizar a atualizaçao do contratante"),
     })
-    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity atualizar(@Valid @RequestBody UpdateContratanteData data) {
-        var contratante = repository.getReferenceById(data.id());
+    @PutMapping(value = "/{id}",consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity atualizar(@Valid @RequestBody UpdateContratanteData data, @PathVariable Long id) {
+        var contratante = repository.getReferenceById(id);
         contratante.atuallizarInformacoes(data);
 
         return ResponseEntity.ok(new DetailContratanteData(contratante));

@@ -9,4 +9,6 @@ public interface FreelancerRepository extends JpaRepository<Freelancer, Long> {
     Page<Freelancer> findAllByAtivoTrue(Pageable paginacao);
 
     UserDetails findByEmail(String email);
+
+    Freelancer findByNomeAndTelefoneAndEmailAndValorHoraAndSenioridade(String nomeFreelancer, String telefone, String email, Double valorHora, String senioridade);
 }

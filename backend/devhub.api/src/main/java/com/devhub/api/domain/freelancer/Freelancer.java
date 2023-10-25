@@ -15,9 +15,7 @@ import java.util.List;
 @Getter
 @Setter
 public class Freelancer extends Usuario {
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    private Long id;
+
     private String cpf;
 
     @Enumerated(EnumType.STRING)
@@ -31,6 +29,8 @@ public class Freelancer extends Usuario {
 
     private String descricao;
 
+    private String senioridade;
+
     public Freelancer() {
         super();
     }
@@ -41,6 +41,7 @@ public class Freelancer extends Usuario {
         this.funcao = data.funcao();
         this.valorHora = data.valorHora();
         this.descricao = data.descricao();
+        this.senioridade = data.senioridade();
     }
 
     public void atuallizarInformacoes(UpdateFreelancerData data) {

@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
@@ -20,9 +20,8 @@ public class Servico {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private int duracao;
-    private String horastrabalhadas;
-    private LocalDateTime createdAt;
+    private Integer horasTrabalhadas;
+    private LocalDate createdAt;
 
     @ManyToOne
     @JoinColumn(name = "fk_freelancer")
@@ -33,10 +32,11 @@ public class Servico {
     private Contratante contratante;
 
     public Servico(CreateServicoData data, Contratante contratante, Freelancer freelancer) {
-        this.duracao = data.duracao();
-        this.horastrabalhadas = data.horasTrabalhadas();
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-        String dataString = LocalDateTime.now(ZoneId.of("America/Sao_Paulo")).format(dateTimeFormatter);
-        this.createdAt = LocalDateTime.parse(dataString, dateTimeFormatter);
+        this.horasTrabalhadas = data.horasTrabalhadas();
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        String dataString = LocalDate.now().format(dateTimeFormatter);
+        this.createdAt = LocalDate.parse(dataString, dateTimeFormatter);
+        this.freelancer = freelancer;
+        this.contratante = contratante;
     }
 }

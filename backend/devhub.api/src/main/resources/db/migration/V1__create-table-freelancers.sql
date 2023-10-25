@@ -10,5 +10,6 @@ create table freelancer (
     cpf varchar(14) not null unique,
     funcao varchar(100) not null,
     valor_hora decimal(7,2) not null,
-    descricao text not null
+    descricao text not null,
+    senioridade varchar(6) not null
 );
