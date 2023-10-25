@@ -26,7 +26,7 @@ public class ContratanteController {
     private ContratanteRepository repository;
 
     @Transactional
-    @Operation(summary = "Realiza a criaçao do Contratante", method = "POST")
+    @Operation(summary = "Realiza a criação do Contratante", method = "POST")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Contratante criado com sucesso"),
             @ApiResponse(responseCode = "422", description = "Dados de requisição inválida"),
@@ -99,7 +99,7 @@ public class ContratanteController {
             @ApiResponse(responseCode = "200", description = "Conta ativada com sucesso"),
             @ApiResponse(responseCode = "422", description = "Dados de requisição inválida"),
             @ApiResponse(responseCode = "400", description = "Parametros inválidos"),
-            @ApiResponse(responseCode = "500", description = "Erro ao realizar a ativaçao da conta"),
+            @ApiResponse(responseCode = "500", description = "Erro ao realizar a ativação da conta"),
     })
     @PatchMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity ativarConta(@PathVariable Long id) {

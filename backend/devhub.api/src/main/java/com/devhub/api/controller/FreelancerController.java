@@ -31,12 +31,12 @@ public class FreelancerController {
     private EspecialidadeRepository especialidadeRepository;
 
     @Transactional
-    @Operation(summary = "Realiza a criaçao do freelancer", method = "POST")
+    @Operation(summary = "Realiza a criaçâo do freelancer", method = "POST")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "o"),
+            @ApiResponse(responseCode = "200", description = "Freelancer criado com sucesso"),
             @ApiResponse(responseCode = "422", description = "Dados de requisição inválida"),
             @ApiResponse(responseCode = "400", description = "Parametros inválidos"),
-            @ApiResponse(responseCode = "500", description = "Erro ao realizar a validaçao do token"),
+            @ApiResponse(responseCode = "500", description = "Erro ao realizar a validação do token"),
     })
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -91,7 +91,7 @@ public class FreelancerController {
     }
 
     @Transactional
-    @Operation(summary = "Realiza a atualizaçao de um dos freelancers", method = "PUT")
+    @Operation(summary = "Realiza a atualização de um dos freelancers", method = "PUT")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Freelancer atualizado com sucesso"),
             @ApiResponse(responseCode = "422", description = "Dados de requisição inválida"),
@@ -112,7 +112,7 @@ public class FreelancerController {
             @ApiResponse(responseCode = "200", description = "Freelancer excluido com sucesso"),
             @ApiResponse(responseCode = "422", description = "Dados de requisição inválida"),
             @ApiResponse(responseCode = "400", description = "Parametros inválidos"),
-            @ApiResponse(responseCode = "500", description = "Erro ao realizar a exclusao de um Freelancer"),
+            @ApiResponse(responseCode = "500", description = "Erro ao realizar a exclusão de um Freelancer"),
     })
     @DeleteMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity excluir(@PathVariable Long id) {
