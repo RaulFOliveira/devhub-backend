@@ -30,7 +30,7 @@ public class UsuarioController {
             var auth = authenticationManager.authenticate(usernamePassword);
             var token = jwtTokenProvider.gerarToken((Usuario) auth.getPrincipal());
             // TODO: validar os dados do sessionStorage pra requests - var teste = ((Usuario) auth.getPrincipal()).getEmail();
-            return ResponseEntity.ok(new TokenJWTData(token));
+            return ResponseEntity.ok(new TokenJWTData(token, ((Usuario) auth.getPrincipal()).getId(), ((Usuario) auth.getPrincipal()).getNome(), ((Usuario) auth.getPrincipal()).getEmail()));
         } catch (UsernameNotFoundException e){
             return ResponseEntity.status(404).body("Email e/ou senha inválidos");
         } catch (Exception e) {
