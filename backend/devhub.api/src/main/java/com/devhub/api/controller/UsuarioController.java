@@ -6,6 +6,7 @@ import com.devhub.api.infra.security.TokenJWTData;
 import com.devhub.api.infra.security.TokenService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -38,5 +39,13 @@ public class UsuarioController {
         }
 
     }
+
+//    @PostMapping("/logout")
+//    public ResponseEntity logout(@RequestBody @Valid TokenJWTData tokenData) {
+//        // Adicione o token à lista negra (pode ser um banco de dados, cache, etc.)
+//        tokenBlacklistService.addToBlacklist(tokenData.getToken());
+//
+//        return ResponseEntity.ok("Logout realizado com sucesso");
+//    }
 
 }
