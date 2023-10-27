@@ -4,6 +4,7 @@ import com.devhub.api.domain.especialidade.Especialidade;
 import com.devhub.api.domain.especialidade.EspecialidadeData;
 import com.devhub.api.domain.especialidade.EspecialidadeRepository;
 import com.devhub.api.domain.freelancer.*;
+import com.devhub.api.service.FreelancerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -26,11 +27,13 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class FreelancerController {
 
     @Autowired
+    private FreelancerService service;
+    @Autowired
     private FreelancerRepository repository;
     @Autowired
     private EspecialidadeRepository especialidadeRepository;
 
-    @Transactional
+
     @Operation(summary = "Realiza a criaçâo do freelancer", method = "POST")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Freelancer criado com sucesso"),
@@ -40,27 +43,14 @@ public class FreelancerController {
     })
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-
     public ResponseEntity createFreelancer(@Valid @RequestBody CreateFreelancerData data, UriComponentsBuilder uriBuilder) {
-
-        var freelancer = new Freelancer(data);
-
-        String encryptedPassword = new BCryptPasswordEncoder().encode(data.senha());
-
-        freelancer.setSenha(encryptedPassword);
-
-        repository.save(freelancer);
-
-        var listaEspecialidades = data.especialidades();
-
-        for (EspecialidadeData dataEspec : listaEspecialidades) {
-            var especialidade = new Especialidade(dataEspec, freelancer);
-            especialidadeRepository.save(especialidade);
+        try {
+            var response = service.cadastrarFreelancer(data, uriBuilder);
+            return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
+        } catch (Exception e) {
+            e.getStackTrace();
+            return ResponseEntity.status(500).body(e.getMessage());
         }
-
-        var uri = uriBuilder.path("/freelancers/{id}").buildAndExpand(freelancer.getId()).toUri();
-
-        return ResponseEntity.created(uri).body(new DetailFreelancerData(freelancer));
     }
 
     @Operation(summary = "Realiza a listagenm dos Freelancers", method = "GET")
@@ -72,7 +62,10 @@ public class FreelancerController {
     })
     @GetMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Page<ListFreelancerData>> listar(@PageableDefault(size = 5, sort = {"nome"}) Pageable paginacao) {
-        var page = repository.findAllByAtivoTrue(paginacao).map(ListFreelancerData::new);
+        var page = service.getFreelancers(paginacao);
+        if (!page.hasContent()) {
+            return ResponseEntity.status(204).build();
+        }
         return ResponseEntity.ok(page);
     }
 
@@ -86,8 +79,10 @@ public class FreelancerController {
 
     @GetMapping(value = "/{id}",consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ListFreelancerData> listarFreelancerById(@PathVariable Long id) {
-        var freelancer = repository.getReferenceById(id);
-        return ResponseEntity.ok(new ListFreelancerData(freelancer));
+        var freelancer = service.getFreelancerById(id);
+        return freelancer != null ?
+                ResponseEntity.ok(new ListFreelancerData(freelancer))
+                : ResponseEntity.notFound().build();
     }
 
     @Transactional
@@ -99,11 +94,12 @@ public class FreelancerController {
             @ApiResponse(responseCode = "500", description = "Erro ao realizar a atualizaçao do freelancer"),
     })
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity atualizar(@Valid @RequestBody UpdateFreelancerData data, @PathVariable Long id) {
-        var freelancer = repository.getReferenceById(id);
-        freelancer.atuallizarInformacoes(data);
+    public ResponseEntity atualizarFreelancer(@Valid @RequestBody UpdateFreelancerData data, @PathVariable Long id) {
+        var freelancer = service.atualizar(data, id);
 
-        return ResponseEntity.ok(new DetailFreelancerData(freelancer));
+        return freelancer != null ?
+                ResponseEntity.ok(new DetailFreelancerData(freelancer))
+                : ResponseEntity.notFound().build();
     }
 
     @Transactional
@@ -116,8 +112,10 @@ public class FreelancerController {
     })
     @DeleteMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity excluir(@PathVariable Long id) {
-        var freelancer = repository.getReferenceById(id);
-        freelancer.excluir();
+        var freelancer = service.excluir(id);
+        if (freelancer == null) {
+            return ResponseEntity.status(404).build();
+        }
         return ResponseEntity.noContent().build();
     }
 
