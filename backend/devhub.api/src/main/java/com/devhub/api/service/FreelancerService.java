@@ -10,9 +10,11 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.ArrayList;
@@ -32,11 +34,8 @@ public class FreelancerService {
     private ContratanteRepository contratanteRepository;
 
     @Transactional
-    public ResponseEntity cadastrarFreelancer(CreateFreelancerData data, UriComponentsBuilder uriBuilder) {
-
-//        if (repository.existsByEmailOrCpfOrTelefone(freelancer.getEmail(), freelancer.getCpf(), freelancer.getTelefone())) {
-//            return ResponseEntity.status(409).build();
-//        }
+    public Freelancer cadastrarFreelancer(CreateFreelancerData data) {
+        
         List<FreelancerValidacaoDTO> dadosFreelancer = repository.validarDadosUnicos();
         List<ContratanteValidacaoDTO> dadosContratante = contratanteRepository.validarDadosUnicos();
 
@@ -44,31 +43,10 @@ public class FreelancerService {
         contasCadastradas.addAll(dadosFreelancer);
         contasCadastradas.addAll(dadosContratante);
 
-        StringBuilder camposEmUso = new StringBuilder("Dados já cadastrados: ");
-        for (Object conta: contasCadastradas) {
-            if (conta instanceof FreelancerValidacaoDTO f) {
-                if (f.getEmail().equalsIgnoreCase(data.email())) {
-                    camposEmUso.append("E-mail ");
-                }
-                if (f.getTelefone().equalsIgnoreCase(data.telefone())) {
-                    camposEmUso.append("Telefone ");
-                }
-                if (f.getCpf().equalsIgnoreCase(data.cpf())) {
-                    camposEmUso.append("CPF ");
-                }
-            } else if (conta instanceof ContratanteValidacaoDTO c) {
-                if (c.getEmail().equalsIgnoreCase(data.email())) {
-                    camposEmUso.append("E-mail ");
-                }
-                if (c.getTelefone().equalsIgnoreCase(data.telefone())) {
-                    camposEmUso.append("Telefone ");
-                }
-            }
+        var camposJaCadastrados = validarCamposCadastrados(contasCadastradas, data);
 
-        }
-
-        if (!camposEmUso.equals("Dados já cadastrados: ")) {
-            return ResponseEntity.status(409).body(camposEmUso);
+        if (!camposJaCadastrados.equals("Dados já cadastrados: ")) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, camposJaCadastrados);
         }
         var freelancer = new Freelancer(data);
         String encryptedPassword = new BCryptPasswordEncoder().encode(data.senha());
@@ -84,13 +62,41 @@ public class FreelancerService {
             especialidadeRepository.save(especialidade);
         }
 
-        var uri = uriBuilder.path("/freelancers/{id}").buildAndExpand(freelancer.getId()).toUri();
+        return freelancer;
+    }
 
-        return ResponseEntity.created(uri).body(new DetailFreelancerData(freelancer));
+    protected String validarCamposCadastrados(List<Object> contasCadastradas, CreateFreelancerData data) {
+        String camposJaCadastrados = "Dados já cadastrados: ";
+        List<String> listaCampos = new ArrayList<>();
+        for (Object conta: contasCadastradas) {
+            if (conta instanceof FreelancerValidacaoDTO f) {
+                if (f.getEmail().equalsIgnoreCase(data.email())) {
+                    listaCampos.add("E-mail");
+                }
+                if (f.getTelefone().equalsIgnoreCase(data.telefone())) {
+                    listaCampos.add("Telefone");
+                }
+                if (f.getCpf().equalsIgnoreCase(data.cpf())) {
+                    listaCampos.add("CPF");
+                }
+            } else if (conta instanceof ContratanteValidacaoDTO c) {
+                if (c.getEmail().equalsIgnoreCase(data.email())) {
+                    listaCampos.add("E-mail");
+                }
+                if (c.getTelefone().equalsIgnoreCase(data.telefone())) {
+                    listaCampos.add("Telefone");
+                }
+            }
+        }
+        String campos = String.join(" | ", listaCampos);
+        return camposJaCadastrados += campos;
     }
 
     public Page<ListFreelancerData> getFreelancers(Pageable paginacao) {
         var page = repository.findAllByAtivoTrue(paginacao).map(ListFreelancerData::new);
+        if (!page.hasContent()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
         return page;
     }
     public Freelancer getFreelancerById(Long id) {

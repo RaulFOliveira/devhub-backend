@@ -41,16 +41,11 @@ public class FreelancerController {
             @ApiResponse(responseCode = "400", description = "Parametros inválidos"),
             @ApiResponse(responseCode = "500", description = "Erro ao realizar a validação do token"),
     })
-
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity createFreelancer(@Valid @RequestBody CreateFreelancerData data, UriComponentsBuilder uriBuilder) {
-        try {
-            var response = service.cadastrarFreelancer(data, uriBuilder);
-            return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
-        } catch (Exception e) {
-            e.getStackTrace();
-            return ResponseEntity.status(500).body(e.getMessage());
-        }
+        var freelancer = service.cadastrarFreelancer(data);
+        var uri = uriBuilder.path("/freelancers/{id}").buildAndExpand(freelancer.getId()).toUri();
+        return ResponseEntity.created(uri).body(freelancer);
     }
 
     @Operation(summary = "Realiza a listagenm dos Freelancers", method = "GET")
@@ -63,9 +58,6 @@ public class FreelancerController {
     @GetMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Page<ListFreelancerData>> listar(@PageableDefault(size = 5, sort = {"nome"}) Pageable paginacao) {
         var page = service.getFreelancers(paginacao);
-        if (!page.hasContent()) {
-            return ResponseEntity.status(204).build();
-        }
         return ResponseEntity.ok(page);
     }
 

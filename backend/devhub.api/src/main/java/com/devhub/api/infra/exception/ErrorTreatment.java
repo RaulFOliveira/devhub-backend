@@ -13,6 +13,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestControllerAdvice
 public class ErrorTreatment {
@@ -43,6 +44,10 @@ public class ErrorTreatment {
         return ResponseEntity.status(404).body("Email e/ou senha inválidos");
     }
 
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity tratarErroCamposConflitos(ResponseStatusException ex) {
+        return ResponseEntity.status(409).body(ex.getMessage());
+    }
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity tratarErroAcessoNegado() {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Acesso negado");
