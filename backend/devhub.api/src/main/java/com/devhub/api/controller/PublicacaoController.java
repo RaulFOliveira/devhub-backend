@@ -8,6 +8,7 @@ import com.devhub.api.domain.publicacao.CreatePublicacaoDTO;
 import com.devhub.api.domain.publicacao.DetailPublicacaoDTO;
 import com.devhub.api.domain.publicacao.Publicacao;
 import com.devhub.api.domain.publicacao.PublicacaoRepository;
+import com.devhub.api.service.PublicacaoService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,24 +21,17 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class PublicacaoController {
     ListaObj<Publicacao> listaPublicacao = new ListaObj<>(100);
 
-
+    @Autowired
+    private PublicacaoService service;
     @Autowired
     private PublicacaoRepository publicacaoRepository;
     @Autowired
     private EspecialidadeDesejadaRepository especialidadeDesejadaRepository;
 
-    @PostMapping
+    @PostMapping("/{id}")
     @Transactional
-    public ResponseEntity criarPublicacao(@RequestBody @Valid CreatePublicacaoDTO data, UriComponentsBuilder uriBuilder) {
-        var publicacao = new Publicacao(data);
-
-        publicacaoRepository.save(publicacao);
-
-        var listaEspecialidades = data.especialidadesDesejadas();
-        for (EspecialidadeDesejadaDTO dataEspec : listaEspecialidades) {
-            var especialidade = new EspecialidadeDesejada(dataEspec, publicacao);
-            especialidadeDesejadaRepository.save(especialidade);
-        }
+    public ResponseEntity criarPublicacao(@RequestBody @Valid CreatePublicacaoDTO data, @PathVariable Long id, UriComponentsBuilder uriBuilder) {
+        var publicacao = service.realizarPublicacao(data, id);
         var uri = uriBuilder.path("/publicacoes/{id}").buildAndExpand(publicacao.getId()).toUri();
         return ResponseEntity.created(uri).body(new DetailPublicacaoDTO(publicacao));
     }
