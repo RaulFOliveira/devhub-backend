@@ -4,10 +4,11 @@ import com.devhub.api.domain.contratante.Contratante;
 import com.devhub.api.domain.contratante.ContratanteRepository;
 import com.devhub.api.domain.freelancer.Freelancer;
 import com.devhub.api.domain.freelancer.FreelancerRepository;
-import com.devhub.api.domain.servico.CreateServicoData;
+import com.devhub.api.domain.servico.CreateServicoDTO;
 import com.devhub.api.domain.servico.Servico;
 import com.devhub.api.domain.servico.ServicoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
 
 import java.io.*;
 import java.time.LocalDateTime;
@@ -15,14 +16,18 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+@Configuration
 public class GerenciadorArquivosTxt {
 
-    @Autowired
-    private static ServicoRepository repository;
-    @Autowired
-    private static ContratanteRepository contratanteRepository;
-    @Autowired
-    private static FreelancerRepository freelancerRepository;
+    private ServicoRepository repository;
+    private ContratanteRepository contratanteRepository;
+    private FreelancerRepository freelancerRepository;
+
+    public GerenciadorArquivosTxt(ServicoRepository repository, ContratanteRepository contratanteRepository, FreelancerRepository freelancerRepository) {
+        this.repository = repository;
+        this.contratanteRepository = contratanteRepository;
+        this.freelancerRepository = freelancerRepository;
+    }
 
     static List<Servico> listaLida = new ArrayList<>();
 
@@ -178,7 +183,7 @@ public class GerenciadorArquivosTxt {
                 if (contaRegDadosLidos / 2 == contadorServicos) {
                     listaLida.add(
                             new Servico(
-                                    new CreateServicoData(horasTrabalhadas), contratante, freelancer
+                                    new CreateServicoDTO(horasTrabalhadas), contratante, freelancer
                             )
                     );
                 }

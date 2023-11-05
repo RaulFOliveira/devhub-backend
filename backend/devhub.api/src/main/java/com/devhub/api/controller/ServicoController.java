@@ -5,8 +5,8 @@ import com.devhub.api.domain.contratante.ContratanteRepository;
 import com.devhub.api.domain.freelancer.Freelancer;
 import com.devhub.api.domain.freelancer.FreelancerRepository;
 import com.devhub.api.domain.funcao.Funcao;
-import com.devhub.api.domain.servico.CreateServicoData;
-import com.devhub.api.domain.servico.DetailServicoData;
+import com.devhub.api.domain.servico.CreateServicoDTO;
+import com.devhub.api.domain.servico.DetailServicoDTO;
 import com.devhub.api.domain.servico.Servico;
 import com.devhub.api.domain.servico.ServicoRepository;
 import jakarta.transaction.Transactional;
@@ -44,7 +44,7 @@ public class ServicoController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity criarPublicacao(@RequestBody @Valid CreateServicoData data,
+    public ResponseEntity criarPublicacao(@RequestBody @Valid CreateServicoDTO data,
                                             @RequestParam Long idContratante,
                                             @RequestParam Long idFreelancer,
                                             UriComponentsBuilder uriBuilder) {
@@ -59,7 +59,7 @@ public class ServicoController {
         servicoRepository.save(servico);
 
         var uri = uriBuilder.path("/servicos/{id}").buildAndExpand(servico.getId()).toUri();
-        return ResponseEntity.created(uri).body(new DetailServicoData(servico));
+        return ResponseEntity.created(uri).body(new DetailServicoDTO(servico));
     }
 
     @GetMapping
@@ -122,7 +122,7 @@ public class ServicoController {
             if (cont % 2 == 0 && cont > 0) {
                 listaLida.add(
                         new Servico(
-                                new CreateServicoData(horasTrabalhadas), contratante, freelancer
+                                new CreateServicoDTO(horasTrabalhadas), contratante, freelancer
                         )
                 );
             }

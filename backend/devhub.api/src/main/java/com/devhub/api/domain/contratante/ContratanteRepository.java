@@ -1,5 +1,6 @@
 package com.devhub.api.domain.contratante;
 
+import com.devhub.api.domain.contratante.dto.ContratanteValidacaoDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,7 +16,7 @@ public interface ContratanteRepository extends JpaRepository<Contratante, Long> 
     Contratante findByCnpj(String cnpj);
 
     @Query("""
-    select new com.devhub.api.domain.contratante.ContratanteValidacaoDTO(c.email, c.cnpj, c.telefone)
+    select new com.devhub.api.domain.contratante.dto.ContratanteValidacaoDTO(c.email, c.cnpj, c.telefone)
     from Contratante c
     """)
     List<ContratanteValidacaoDTO> validarDadosUnicos();

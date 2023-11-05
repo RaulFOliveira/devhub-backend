@@ -1,5 +1,7 @@
 package com.devhub.api.domain.contratante;
 
+import com.devhub.api.domain.contratante.dto.CreateContratanteDTO;
+import com.devhub.api.domain.contratante.dto.UpdateContratanteDTO;
 import com.devhub.api.domain.publicacao.Publicacao;
 import com.devhub.api.domain.usuario.UserRole;
 import com.devhub.api.domain.usuario.Usuario;
@@ -12,19 +14,20 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
 public class Contratante extends Usuario {
 
     private String cnpj;
     @OneToMany
     private List<Publicacao> publicacoes;
 
-    public Contratante(CreateContratanteData data) {
+    public Contratante() { super(); }
+
+    public Contratante(CreateContratanteDTO data) {
         super(data.nome(), data.telefone(), data.email(), data.senha(), UserRole.CONTRATANTE);
         this.cnpj = data.cnpj();
     }
 
-    public void atuallizarInformacoes(UpdateContratanteData data) {
+    public void atuallizarInformacoes(UpdateContratanteDTO data) {
         if (data.nome() != null) {
             this.nome = data.nome();
         }

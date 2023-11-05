@@ -23,7 +23,7 @@ public class EspecialidadeDesejada {
     @JoinColumn(name = "fk_publicacao")
     private Publicacao publicacao;
 
-    public EspecialidadeDesejada(EspecialidadeDesejadaData data, Publicacao publicacao) {
+    public EspecialidadeDesejada(EspecialidadeDesejadaDTO data, Publicacao publicacao) {
         this.nomeEspecialidade = data.nome();
         this.publicacao = publicacao;
     }

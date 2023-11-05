@@ -1,27 +1,27 @@
 package com.devhub.api.service;
 
 import com.devhub.api.domain.contratante.ContratanteRepository;
-import com.devhub.api.domain.contratante.ContratanteValidacaoDTO;
+import com.devhub.api.domain.contratante.dto.ContratanteValidacaoDTO;
 import com.devhub.api.domain.especialidade.Especialidade;
-import com.devhub.api.domain.especialidade.EspecialidadeData;
+import com.devhub.api.domain.especialidade.EspecialidadeDTO;
 import com.devhub.api.domain.especialidade.EspecialidadeRepository;
 import com.devhub.api.domain.freelancer.*;
+import com.devhub.api.domain.freelancer.dto.CreateFreelancerDTO;
+import com.devhub.api.domain.freelancer.dto.FreelancerValidacaoDTO;
+import com.devhub.api.domain.freelancer.dto.ListFreelancerDTO;
+import com.devhub.api.domain.freelancer.dto.UpdateFreelancerDTO;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class FreelancerService {
@@ -34,7 +34,7 @@ public class FreelancerService {
     private ContratanteRepository contratanteRepository;
 
     @Transactional
-    public Freelancer cadastrarFreelancer(CreateFreelancerData data) {
+    public Freelancer cadastrarFreelancer(CreateFreelancerDTO data) {
         
         List<FreelancerValidacaoDTO> dadosFreelancer = repository.validarDadosUnicos();
         List<ContratanteValidacaoDTO> dadosContratante = contratanteRepository.validarDadosUnicos();
@@ -57,7 +57,7 @@ public class FreelancerService {
 
         var listaEspecialidades = data.especialidades();
 
-        for (EspecialidadeData dataEspec : listaEspecialidades) {
+        for (EspecialidadeDTO dataEspec : listaEspecialidades) {
             var especialidade = new Especialidade(dataEspec, freelancer);
             especialidadeRepository.save(especialidade);
         }
@@ -65,7 +65,7 @@ public class FreelancerService {
         return freelancer;
     }
 
-    protected String validarCamposCadastrados(List<Object> contasCadastradas, CreateFreelancerData data) {
+    protected String validarCamposCadastrados(List<Object> contasCadastradas, CreateFreelancerDTO data) {
         String camposJaCadastrados = "Dados já cadastrados: ";
         List<String> listaCampos = new ArrayList<>();
         for (Object conta: contasCadastradas) {
@@ -92,32 +92,37 @@ public class FreelancerService {
         return camposJaCadastrados += campos;
     }
 
-    public Page<ListFreelancerData> getFreelancers(Pageable paginacao) {
-        var page = repository.findAllByAtivoTrue(paginacao).map(ListFreelancerData::new);
+    public Page<ListFreelancerDTO> getFreelancers(Pageable paginacao) {
+        var page = repository.findAllByAtivoTrue(paginacao).map(ListFreelancerDTO::new);
         if (!page.hasContent()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            throw new ResponseStatusException(HttpStatus.NO_CONTENT);
         }
         return page;
     }
     public Freelancer getFreelancerById(Long id) {
-        return repository.getReferenceById(id);
-    }
-
-    public Freelancer atualizar(UpdateFreelancerData data, Long id) {
         var freelancer = repository.getReferenceById(id);
         if (freelancer == null) {
-            return null;
+            throw new EntityNotFoundException();
+        }
+        return freelancer;
+    }
+
+    @Transactional
+    public Freelancer atualizar(UpdateFreelancerDTO data, Long id) {
+        var freelancer = repository.getReferenceById(id);
+        if (freelancer == null) {
+            throw new EntityNotFoundException();
         }
         freelancer.atuallizarInformacoes(data);
         return freelancer;
     }
 
-    public Freelancer excluir(Long id) {
+    @Transactional
+    public void excluir(Long id) {
         var freelancer = repository.getReferenceById(id);
         if (freelancer == null) {
-            return null;
+            throw new EntityNotFoundException();
         }
         freelancer.excluir();
-        return freelancer;
     }
 }

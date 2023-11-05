@@ -36,18 +36,17 @@ public class ErrorTreatment {
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity tratarErroBadCredentials() {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciais inválidas");
-    }
-
-    @ExceptionHandler(AuthenticationException.class)
-    public ResponseEntity tratarErroAuthentication() {
-        return ResponseEntity.status(404).body("Email e/ou senha inválidos");
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Email e/ou senha inválidos");
     }
 
     @ExceptionHandler(ResponseStatusException.class)
-    public ResponseEntity tratarErroCamposConflitos(ResponseStatusException ex) {
-        return ResponseEntity.status(409).body(ex.getMessage());
+    public ResponseEntity tratarResponseStatus(ResponseStatusException ex) {
+        if (ex.getBody().getDetail() == null) {
+            return ResponseEntity.status(ex.getStatusCode()).build();
+        }
+        return ResponseEntity.status(ex.getStatusCode()).body(ex.getBody().getDetail());
     }
+
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity tratarErroAcessoNegado() {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Acesso negado");

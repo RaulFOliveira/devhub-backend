@@ -25,13 +25,6 @@ public class UsuarioController {
 
     @PostMapping
     public ResponseEntity login(@RequestBody @Valid AutenticacaoData loginRequest) {
-        try {
-            return ResponseEntity.ok(service.login(loginRequest));
-        } catch (AuthenticationException e){
-            return ResponseEntity.status(404).body("Email e/ou senha inválidos");
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body(e.getMessage());
-        }
-
+        return ResponseEntity.ok(service.login(loginRequest));
     }
 }

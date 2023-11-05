@@ -1,12 +1,11 @@
 package com.devhub.api.controller;
 
 import com.devhub.api.ListaObj;
-import com.devhub.api.domain.especialidade.Especialidade;
 import com.devhub.api.domain.especialidade_desejada.EspecialidadeDesejada;
-import com.devhub.api.domain.especialidade_desejada.EspecialidadeDesejadaData;
+import com.devhub.api.domain.especialidade_desejada.EspecialidadeDesejadaDTO;
 import com.devhub.api.domain.especialidade_desejada.EspecialidadeDesejadaRepository;
-import com.devhub.api.domain.publicacao.CreatePublicacaoData;
-import com.devhub.api.domain.publicacao.DetailPublicacaoData;
+import com.devhub.api.domain.publicacao.CreatePublicacaoDTO;
+import com.devhub.api.domain.publicacao.DetailPublicacaoDTO;
 import com.devhub.api.domain.publicacao.Publicacao;
 import com.devhub.api.domain.publicacao.PublicacaoRepository;
 import jakarta.transaction.Transactional;
@@ -15,10 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
-
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
 
 @RestController
 @RequestMapping("/publicacoes")
@@ -33,18 +28,18 @@ public class PublicacaoController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity criarPublicacao(@RequestBody @Valid CreatePublicacaoData data, UriComponentsBuilder uriBuilder) {
+    public ResponseEntity criarPublicacao(@RequestBody @Valid CreatePublicacaoDTO data, UriComponentsBuilder uriBuilder) {
         var publicacao = new Publicacao(data);
 
         publicacaoRepository.save(publicacao);
 
         var listaEspecialidades = data.especialidadesDesejadas();
-        for (EspecialidadeDesejadaData dataEspec : listaEspecialidades) {
+        for (EspecialidadeDesejadaDTO dataEspec : listaEspecialidades) {
             var especialidade = new EspecialidadeDesejada(dataEspec, publicacao);
             especialidadeDesejadaRepository.save(especialidade);
         }
         var uri = uriBuilder.path("/publicacoes/{id}").buildAndExpand(publicacao.getId()).toUri();
-        return ResponseEntity.created(uri).body(new DetailPublicacaoData(publicacao));
+        return ResponseEntity.created(uri).body(new DetailPublicacaoDTO(publicacao));
     }
 
     @GetMapping

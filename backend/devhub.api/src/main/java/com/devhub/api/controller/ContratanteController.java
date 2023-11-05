@@ -1,6 +1,11 @@
 package com.devhub.api.controller;
 
 import com.devhub.api.domain.contratante.*;
+import com.devhub.api.domain.contratante.dto.CreateContratanteDTO;
+import com.devhub.api.domain.contratante.dto.DetailContratanteDTO;
+import com.devhub.api.domain.contratante.dto.ListContratanteDTO;
+import com.devhub.api.domain.contratante.dto.UpdateContratanteDTO;
+import com.devhub.api.service.ContratanteService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -24,8 +29,9 @@ public class ContratanteController {
 
     @Autowired
     private ContratanteRepository repository;
+    @Autowired
+    private ContratanteService service;
 
-    @Transactional
     @Operation(summary = "Realiza a criação do Contratante", method = "POST")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Contratante criado com sucesso"),
@@ -34,19 +40,10 @@ public class ContratanteController {
             @ApiResponse(responseCode = "500", description = "Erro ao realizar a criaçao de um novo contratante"),
     })
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity createContratante(@Valid @RequestBody CreateContratanteData data, UriComponentsBuilder uriBuilder) {
-
-        var contratante = new Contratante(data);
-
-        String encryptedPassword = new BCryptPasswordEncoder().encode(data.senha());
-
-        contratante.setSenha(encryptedPassword);
-
-        repository.save(contratante);
-
+    public ResponseEntity createContratante(@Valid @RequestBody CreateContratanteDTO data, UriComponentsBuilder uriBuilder) {
+        var contratante = service.cadastrarContratante(data);
         var uri = uriBuilder.path("/contratantes/{id}").buildAndExpand(contratante.getId()).toUri();
-
-        return ResponseEntity.created(uri).body(new DetailContratanteData(contratante));
+        return ResponseEntity.created(uri).body(new DetailContratanteDTO(contratante));
     }
 
     @Operation(summary = "Realiza a listagenm dos Contratantes", method = "GET")
@@ -57,12 +54,11 @@ public class ContratanteController {
             @ApiResponse(responseCode = "500", description = "Erro ao realizar a listagem dos contratantes"),
     })
     @GetMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Page<ListContratanteData>> listar(@PageableDefault(size = 5, sort = {"nome"}) Pageable paginacao) {
-        var page = repository.findAllByAtivoTrue(paginacao).map(ListContratanteData::new);
+    public ResponseEntity<Page<ListContratanteDTO>> listar(@PageableDefault(size = 5, sort = {"nome"}) Pageable paginacao) {
+        var page = service.getContratantes(paginacao);
         return ResponseEntity.ok(page);
     }
 
-    @Transactional
     @Operation(summary = "Realiza a atualizaçao de um dos Contratantes", method = "PUT")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Contratante atualizado com sucesso"),
@@ -71,14 +67,11 @@ public class ContratanteController {
             @ApiResponse(responseCode = "500", description = "Erro ao realizar a atualizaçao do contratante"),
     })
     @PutMapping(value = "/{id}",consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity atualizar(@Valid @RequestBody UpdateContratanteData data, @PathVariable Long id) {
-        var contratante = repository.getReferenceById(id);
-        contratante.atuallizarInformacoes(data);
-
-        return ResponseEntity.ok(new DetailContratanteData(contratante));
+    public ResponseEntity<DetailContratanteDTO> atualizar(@Valid @RequestBody UpdateContratanteDTO data, @PathVariable Long id) {
+        var contratante = service.atualizar(data, id);
+        return ResponseEntity.ok(new DetailContratanteDTO(contratante));
     }
 
-    @Transactional
     @Operation(summary = "Realiza a exclusao de um contratante", method = "DELETE")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Contratante excluido com sucesso"),
@@ -88,8 +81,7 @@ public class ContratanteController {
     })
     @DeleteMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity excluir(@PathVariable Long id) {
-        var contratante = repository.getReferenceById(id);
-        contratante.excluir();
+        service.excluir(id);
         return ResponseEntity.noContent().build();
     }
 

@@ -1,5 +1,6 @@
 package com.devhub.api.infra.security;
 
+import com.devhub.api.domain.usuario.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,13 +31,22 @@ public class SecurityConfiguration {
                 .cors(Customizer.withDefaults())
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(req -> {
+                    //LOGIN
                     req.requestMatchers(HttpMethod.POST, "/login").permitAll();
+                    //CADASTRO
                     req.requestMatchers(HttpMethod.POST, "/freelancers").permitAll();
                     req.requestMatchers(HttpMethod.POST, "/contratantes").permitAll();
-                    req.requestMatchers(HttpMethod.POST, "/servicos").permitAll();
+                    //ENCERRAMENTO DE SERVICO
+                    req.requestMatchers(HttpMethod.POST, "/servicos").hasRole("CONTRATANTE");
+                    //PUBLICACOES
+                    req.requestMatchers(HttpMethod.POST, "/publicacoes").hasRole("CONTRATANTE");
+                    req.requestMatchers(HttpMethod.DELETE, "/publicacoes").hasRole("CONTRATANTE");
+                    req.requestMatchers(HttpMethod.PUT, "/publicacoes").hasRole("CONTRATANTE");
+                    //SWAGGER
                     req.requestMatchers(HttpMethod.GET, "/swagger-ui/**").permitAll();
                     req.requestMatchers("/v3/api-docs/**").permitAll();
                     req.requestMatchers("/swagger-resources/**").permitAll();
+
                     req.anyRequest().authenticated();
                 })
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
