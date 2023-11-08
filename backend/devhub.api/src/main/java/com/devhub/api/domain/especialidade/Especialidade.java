@@ -23,16 +23,14 @@ public class Especialidade {
     private Long id_especialidade;
 
     private String descricao;
-    private String tempoExp;
 
     @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "fk_freelancer")
     private Freelancer freelancer;
 
-    public Especialidade(EspecialidadeData data, Freelancer freelancer) {
+    public Especialidade(EspecialidadeDTO data, Freelancer freelancer) {
         this.descricao = data.descricao();
-        this.tempoExp = data.tempoExp();
         this.freelancer = freelancer;
     }
 }

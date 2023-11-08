@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 @Table(name = "servico")
@@ -31,7 +30,7 @@ public class Servico {
     @JoinColumn(name = "fk_contratante")
     private Contratante contratante;
 
-    public Servico(CreateServicoData data, Contratante contratante, Freelancer freelancer) {
+    public Servico(CreateServicoDTO data, Contratante contratante, Freelancer freelancer) {
         this.horasTrabalhadas = data.horasTrabalhadas();
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         String dataString = LocalDate.now().format(dateTimeFormatter);

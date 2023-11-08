@@ -1,6 +1,6 @@
-package com.devhub.api.domain.freelancer;
+package com.devhub.api.domain.freelancer.dto;
 
-import com.devhub.api.domain.especialidade.EspecialidadeData;
+import com.devhub.api.domain.especialidade.EspecialidadeDTO;
 import com.devhub.api.domain.funcao.Funcao;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
@@ -11,7 +11,7 @@ import org.hibernate.validator.constraints.br.CPF;
 
 import java.util.List;
 
-public record CreateFreelancerData(
+public record CreateFreelancerDTO(
         @NotBlank
         String nome,
         @NotBlank
@@ -31,7 +31,7 @@ public record CreateFreelancerData(
         Double valorHora,
         @NotNull
         @Valid
-        List<EspecialidadeData> especialidades,
+        List<EspecialidadeDTO> especialidades,
         @NotBlank
         String descricao,
         @NotBlank

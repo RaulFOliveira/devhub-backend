@@ -1,16 +1,19 @@
 package com.devhub.api.infra.exception;
 
 import jakarta.persistence.EntityNotFoundException;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestControllerAdvice
 public class ErrorTreatment {
@@ -33,12 +36,15 @@ public class ErrorTreatment {
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity tratarErroBadCredentials() {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciais inválidas");
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Email e/ou senha inválidos");
     }
 
-    @ExceptionHandler(AuthenticationException.class)
-    public ResponseEntity tratarErroAuthentication() {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Falha na autenticação");
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity tratarResponseStatus(ResponseStatusException ex) {
+        if (ex.getBody().getDetail() == null) {
+            return ResponseEntity.status(ex.getStatusCode()).build();
+        }
+        return ResponseEntity.status(ex.getStatusCode()).body(ex.getBody().getDetail());
     }
 
     @ExceptionHandler(AccessDeniedException.class)

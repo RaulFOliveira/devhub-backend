@@ -1,7 +1,6 @@
 package com.devhub.api.domain.usuario;
 
-import com.devhub.api.domain.contratante.UpdateContratanteData;
-import com.devhub.api.domain.freelancer.UpdateFreelancerData;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -30,6 +29,7 @@ public abstract class Usuario implements UserDetails {
 
     protected Boolean ativo;
 
+    @JsonIgnore
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
@@ -46,37 +46,44 @@ public abstract class Usuario implements UserDetails {
         this.ativo = true;
     }
 
+    @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if(this.role == UserRole.CONTRATANTE) return List.of(new SimpleGrantedAuthority("ROLE_CONTRATANTE"));
         else return List.of(new SimpleGrantedAuthority("ROLE_FREELANCER"));
     }
 
+    @JsonIgnore
     @Override
     public String getPassword() {
         return senha;
     }
 
+    @JsonIgnore
     @Override
     public String getUsername() {
         return email;
     }
 
+    @JsonIgnore
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
 
+    @JsonIgnore
     @Override
     public boolean isAccountNonLocked() {
         return true;
     }
 
+    @JsonIgnore
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
+    @JsonIgnore
     @Override
     public boolean isEnabled() {
         return true;

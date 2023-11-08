@@ -1,9 +1,12 @@
 package com.devhub.api.domain.freelancer;
 
 import com.devhub.api.domain.especialidade.Especialidade;
+import com.devhub.api.domain.freelancer.dto.CreateFreelancerDTO;
+import com.devhub.api.domain.freelancer.dto.UpdateFreelancerDTO;
 import com.devhub.api.domain.funcao.Funcao;
 import com.devhub.api.domain.usuario.UserRole;
 import com.devhub.api.domain.usuario.Usuario;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -31,20 +34,25 @@ public class Freelancer extends Usuario {
 
     private String senioridade;
 
+//    @JsonIgnore
+//    @Column(length = 10 * 1024 * 1024)
+//    private byte[] imagem;
+
     public Freelancer() {
         super();
     }
 
-    public Freelancer(CreateFreelancerData data) {
+    public Freelancer(CreateFreelancerDTO data) {
         super(data.nome(), data.telefone(),data.email(), data.senha(), UserRole.FREELANCER);
         this.cpf = data.cpf();
         this.funcao = data.funcao();
         this.valorHora = data.valorHora();
         this.descricao = data.descricao();
         this.senioridade = data.senioridade();
+//        this.imagem = null;
     }
 
-    public void atuallizarInformacoes(UpdateFreelancerData data) {
+    public void atuallizarInformacoes(UpdateFreelancerDTO data) {
         if (data.nome() != null) {
             this.nome = data.nome();
         }

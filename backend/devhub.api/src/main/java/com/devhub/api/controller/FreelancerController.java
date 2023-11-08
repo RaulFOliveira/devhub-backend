@@ -1,9 +1,12 @@
 package com.devhub.api.controller;
 
-import com.devhub.api.domain.especialidade.Especialidade;
-import com.devhub.api.domain.especialidade.EspecialidadeData;
 import com.devhub.api.domain.especialidade.EspecialidadeRepository;
 import com.devhub.api.domain.freelancer.*;
+import com.devhub.api.domain.freelancer.dto.CreateFreelancerDTO;
+import com.devhub.api.domain.freelancer.dto.DetailFreelancerDTO;
+import com.devhub.api.domain.freelancer.dto.ListFreelancerDTO;
+import com.devhub.api.domain.freelancer.dto.UpdateFreelancerDTO;
+import com.devhub.api.service.FreelancerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -16,7 +19,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -26,11 +28,13 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class FreelancerController {
 
     @Autowired
+    private FreelancerService service;
+    @Autowired
     private FreelancerRepository repository;
     @Autowired
     private EspecialidadeRepository especialidadeRepository;
 
-    @Transactional
+
     @Operation(summary = "Realiza a criaçâo do freelancer", method = "POST")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Freelancer criado com sucesso"),
@@ -38,29 +42,11 @@ public class FreelancerController {
             @ApiResponse(responseCode = "400", description = "Parametros inválidos"),
             @ApiResponse(responseCode = "500", description = "Erro ao realizar a validação do token"),
     })
-
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-
-    public ResponseEntity createFreelancer(@Valid @RequestBody CreateFreelancerData data, UriComponentsBuilder uriBuilder) {
-
-        var freelancer = new Freelancer(data);
-
-        String encryptedPassword = new BCryptPasswordEncoder().encode(data.senha());
-
-        freelancer.setSenha(encryptedPassword);
-
-        repository.save(freelancer);
-
-        var listaEspecialidades = data.especialidades();
-
-        for (EspecialidadeData dataEspec : listaEspecialidades) {
-            var especialidade = new Especialidade(dataEspec, freelancer);
-            especialidadeRepository.save(especialidade);
-        }
-
+    public ResponseEntity createFreelancer(@Valid @RequestBody CreateFreelancerDTO data, UriComponentsBuilder uriBuilder) {
+        var freelancer = service.cadastrarFreelancer(data);
         var uri = uriBuilder.path("/freelancers/{id}").buildAndExpand(freelancer.getId()).toUri();
-
-        return ResponseEntity.created(uri).body(new DetailFreelancerData(freelancer));
+        return ResponseEntity.created(uri).body(freelancer);
     }
 
     @Operation(summary = "Realiza a listagenm dos Freelancers", method = "GET")
@@ -71,8 +57,8 @@ public class FreelancerController {
             @ApiResponse(responseCode = "500", description = "Erro ao realizar a listagem dos Freelancers"),
     })
     @GetMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Page<ListFreelancerData>> listar(@PageableDefault(size = 5, sort = {"nome"}) Pageable paginacao) {
-        var page = repository.findAllByAtivoTrue(paginacao).map(ListFreelancerData::new);
+    public ResponseEntity<Page<ListFreelancerDTO>> listar(@PageableDefault(size = 5, sort = {"nome"}) Pageable paginacao) {
+        var page = service.getFreelancers(paginacao);
         return ResponseEntity.ok(page);
     }
 
@@ -85,12 +71,11 @@ public class FreelancerController {
     })
 
     @GetMapping(value = "/{id}",consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ListFreelancerData> listarFreelancerById(@PathVariable Long id) {
-        var freelancer = repository.getReferenceById(id);
-        return ResponseEntity.ok(new ListFreelancerData(freelancer));
+    public ResponseEntity<ListFreelancerDTO> listarFreelancerById(@PathVariable Long id) {
+        var freelancer = service.getFreelancerById(id);
+        return ResponseEntity.ok(new ListFreelancerDTO(freelancer));
     }
 
-    @Transactional
     @Operation(summary = "Realiza a atualização de um dos freelancers", method = "PUT")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Freelancer atualizado com sucesso"),
@@ -99,14 +84,11 @@ public class FreelancerController {
             @ApiResponse(responseCode = "500", description = "Erro ao realizar a atualizaçao do freelancer"),
     })
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity atualizar(@Valid @RequestBody UpdateFreelancerData data, @PathVariable Long id) {
-        var freelancer = repository.getReferenceById(id);
-        freelancer.atuallizarInformacoes(data);
-
-        return ResponseEntity.ok(new DetailFreelancerData(freelancer));
+    public ResponseEntity<DetailFreelancerDTO> atualizarFreelancer(@Valid @RequestBody UpdateFreelancerDTO data, @PathVariable Long id) {
+        var freelancer = service.atualizar(data, id);
+        return ResponseEntity.ok(new DetailFreelancerDTO(freelancer));
     }
 
-    @Transactional
     @Operation(summary = "Realiza a exclusao de um freelancer", method = "DELETE")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Freelancer excluido com sucesso"),
@@ -116,8 +98,7 @@ public class FreelancerController {
     })
     @DeleteMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity excluir(@PathVariable Long id) {
-        var freelancer = repository.getReferenceById(id);
-        freelancer.excluir();
+        service.excluir(id);
         return ResponseEntity.noContent().build();
     }
 
