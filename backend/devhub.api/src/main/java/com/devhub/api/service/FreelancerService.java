@@ -57,10 +57,11 @@ public class FreelancerService {
 
         var listaEspecialidades = data.especialidades();
 
+        List<Especialidade> especialidades = new ArrayList<>();
         for (EspecialidadeDTO dataEspec : listaEspecialidades) {
-            var especialidade = new Especialidade(dataEspec, freelancer);
-            especialidadeRepository.save(especialidade);
+            especialidades.add(new Especialidade(dataEspec, freelancer));
         }
+        especialidadeRepository.saveAll(especialidades);
 
         return freelancer;
     }

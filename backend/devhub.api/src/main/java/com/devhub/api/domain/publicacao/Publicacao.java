@@ -2,6 +2,7 @@ package com.devhub.api.domain.publicacao;
 
 import com.devhub.api.domain.contratante.Contratante;
 import com.devhub.api.domain.especialidade_desejada.EspecialidadeDesejada;
+import com.devhub.api.domain.publicacao.dto.CreatePublicacaoDTO;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -25,6 +26,7 @@ public class Publicacao {
     private String titulo;
     private String descricao;
     @ManyToOne
+    @JoinColumn(name = "fk_contratante")
     private Contratante contratante;
     private LocalDateTime createdAt;
     @JsonManagedReference

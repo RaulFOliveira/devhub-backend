@@ -1,4 +1,4 @@
-package com.devhub.api.domain.publicacao;
+package com.devhub.api.domain.publicacao.dto;
 
 import com.devhub.api.domain.especialidade_desejada.EspecialidadeDesejadaDTO;
 import jakarta.validation.constraints.NotBlank;
