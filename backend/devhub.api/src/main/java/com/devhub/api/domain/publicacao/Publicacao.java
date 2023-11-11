@@ -3,6 +3,7 @@ package com.devhub.api.domain.publicacao;
 import com.devhub.api.domain.contratante.Contratante;
 import com.devhub.api.domain.especialidade_desejada.EspecialidadeDesejada;
 import com.devhub.api.domain.publicacao.dto.CreatePublicacaoDTO;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -25,6 +26,7 @@ public class Publicacao {
     private Long id;
     private String titulo;
     private String descricao;
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "fk_contratante")
     private Contratante contratante;
