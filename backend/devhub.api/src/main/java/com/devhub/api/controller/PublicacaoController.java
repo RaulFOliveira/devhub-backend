@@ -1,5 +1,6 @@
 package com.devhub.api.controller;
 
+import com.devhub.api.FilaObj;
 import com.devhub.api.ListaObj;
 import com.devhub.api.domain.publicacao.dto.CreatePublicacaoDTO;
 import com.devhub.api.domain.publicacao.dto.DetailPublicacaoDTO;
@@ -7,6 +8,7 @@ import com.devhub.api.domain.publicacao.Publicacao;
 import com.devhub.api.service.PublicacaoService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +23,7 @@ public class PublicacaoController {
     @Autowired
     private PublicacaoService service;
 
+
     @PostMapping("/{id}")
     @Transactional
     public ResponseEntity criarPublicacao(@RequestBody @Valid CreatePublicacaoDTO data, @PathVariable Long id, UriComponentsBuilder uriBuilder) {
@@ -29,6 +32,12 @@ public class PublicacaoController {
         return ResponseEntity.created(uri).body(new DetailPublicacaoDTO(publicacao));
     }
 
+    @PostMapping("/agendar-publicacao/{id}")
+    public ResponseEntity agendarPublicacoes(
+            @RequestBody @Valid List<CreatePublicacaoDTO> data, @PathVariable Long id, UriComponentsBuilder uriBuilder) {
+        service.enfileirarPublicacoes(data);
+        return ResponseEntity.status(200).build();
+    }
     @GetMapping
     public ResponseEntity<List<Publicacao>> mostrarPublicacoes() {
         var publicacoes = service.mostrarPublicacoes();
@@ -39,5 +48,11 @@ public class PublicacaoController {
     public ResponseEntity<List<Publicacao>> mostrarPublicacoesById(@PathVariable Long id) {
         var publicacoes = service.mostrarPublicacoesByid(id);
         return ResponseEntity.status(200).body(publicacoes);
+    }
+
+    @DeleteMapping("/{idPublicacao}")
+    public ResponseEntity deletarPublicacao(@PathVariable Long idPublicacao) {
+        service.deletarPublicacao(idPublicacao);
+        return ResponseEntity.status(200).build();
     }
 }

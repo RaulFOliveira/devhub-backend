@@ -1,5 +1,6 @@
 package com.devhub.api.service;
 
+import com.devhub.api.FilaObj;
 import com.devhub.api.ListaObj;
 import com.devhub.api.domain.contratante.ContratanteRepository;
 import com.devhub.api.domain.especialidade_desejada.EspecialidadeDesejada;
@@ -9,6 +10,8 @@ import com.devhub.api.domain.publicacao.dto.CreatePublicacaoDTO;
 import com.devhub.api.domain.publicacao.Publicacao;
 import com.devhub.api.domain.publicacao.PublicacaoRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -22,14 +25,15 @@ public class PublicacaoService {
     private PublicacaoRepository repository;
     private ContratanteRepository contratanteRepository;
     private EspecialidadeDesejadaRepository especialidadeDesejadaRepository;
-    ListaObj<Publicacao> listaPublicacao = new ListaObj<>(100);
-
-    public PublicacaoService(PublicacaoRepository repository, ContratanteRepository contratanteRepository, EspecialidadeDesejadaRepository especialidadeDesejadaRepository) {
+    private FilaObj<Publicacao> fila;
+    public PublicacaoService(PublicacaoRepository repository, ContratanteRepository contratanteRepository, EspecialidadeDesejadaRepository especialidadeDesejadaRepository, FilaObj<Publicacao> fila) {
         this.repository = repository;
         this.contratanteRepository = contratanteRepository;
         this.especialidadeDesejadaRepository = especialidadeDesejadaRepository;
+        this.fila = new FilaObj<>(15);
     }
 
+    @Transactional
     public Publicacao realizarPublicacao(CreatePublicacaoDTO data, Long id) {
         var contratante = contratanteRepository.getReferenceById(id);
 
@@ -104,4 +108,21 @@ public class PublicacaoService {
         return publicacoes;
     }
 
+    @Transactional
+    public void deletarPublicacao(Long id) {
+        var publicacao = repository.getReferenceById(id);
+        if (publicacao.equals(null)) {
+            throw new EntityNotFoundException();
+        }
+
+        especialidadeDesejadaRepository.deleteAllByFkPublicacao(publicacao);
+        repository.delete(publicacao);
+    }
+
+    @Transactional
+    public void enfileirarPublicacoes(List<CreatePublicacaoDTO> publicacaoDTOS) {
+        for (CreatePublicacaoDTO publicacaoDTO : publicacaoDTOS) {
+
+        }
+    }
 }
