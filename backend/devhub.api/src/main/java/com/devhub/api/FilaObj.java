@@ -51,12 +51,11 @@ public class FilaObj<T>{
             return (T) "Fila vazia";
         } else {
             T temp = fila[0];
-            for (int i = 0; i < fila.length; i++) {
-                for (int j = i + 1; j < fila.length -1; j++) {
-                    fila[i] = fila[j];
-                }
+            for (int i = 0; i < tamanho - 1; i++) {
+                fila[i] = fila[i + 1];
             }
-            tamanho --;
+            fila[tamanho-1] = null;
+            tamanho--;
             return temp;
         }
     }
@@ -66,7 +65,7 @@ public class FilaObj<T>{
         if (isEmpty()) {
             System.out.println("Fila vazia!");
         } else {
-            for (int i = 0; i < fila.length; i++) {
+            for (int i = 0; i < tamanho; i++) {
                 System.out.println(fila[i]);
             }
         }

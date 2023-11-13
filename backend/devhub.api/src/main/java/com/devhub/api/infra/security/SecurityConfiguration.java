@@ -41,7 +41,6 @@ public class SecurityConfiguration {
                     //PUBLICACOES
                     req.requestMatchers(HttpMethod.POST, "/publicacoes").hasRole("CONTRATANTE");
                     req.requestMatchers(HttpMethod.DELETE, "/publicacoes").hasRole("CONTRATANTE");
-                    req.requestMatchers(HttpMethod.PUT, "/publicacoes").hasRole("CONTRATANTE");
                     //SWAGGER
                     req.requestMatchers(HttpMethod.GET, "/swagger-ui/**").permitAll();
                     req.requestMatchers("/v3/api-docs/**").permitAll();

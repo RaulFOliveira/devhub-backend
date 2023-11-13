@@ -26,7 +26,7 @@ public class PublicacaoService {
     private ContratanteRepository contratanteRepository;
     private EspecialidadeDesejadaRepository especialidadeDesejadaRepository;
     private FilaObj<Publicacao> fila;
-    public PublicacaoService(PublicacaoRepository repository, ContratanteRepository contratanteRepository, EspecialidadeDesejadaRepository especialidadeDesejadaRepository, FilaObj<Publicacao> fila) {
+    public PublicacaoService(PublicacaoRepository repository, ContratanteRepository contratanteRepository, EspecialidadeDesejadaRepository especialidadeDesejadaRepository) {
         this.repository = repository;
         this.contratanteRepository = contratanteRepository;
         this.especialidadeDesejadaRepository = especialidadeDesejadaRepository;
@@ -38,7 +38,8 @@ public class PublicacaoService {
         var contratante = contratanteRepository.getReferenceById(id);
 
         if (contratante == null) {
-            throw new EntityNotFoundException("Não foi possível encontrar um contratante com ID: " + id);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                    "Não foi possível encontrar um contratante com ID: " + id);
         }
 
         var publicacao = new Publicacao(data, contratante);
@@ -119,10 +120,39 @@ public class PublicacaoService {
         repository.delete(publicacao);
     }
 
-    @Transactional
-    public void enfileirarPublicacoes(List<CreatePublicacaoDTO> publicacaoDTOS) {
-        for (CreatePublicacaoDTO publicacaoDTO : publicacaoDTOS) {
+    public void enfileirarPublicacoes(List<CreatePublicacaoDTO> publicacaoDTOS, Long id) {
 
+
+        var contratante = contratanteRepository.getReferenceById(id);
+        if (contratante.equals(null)) {
+            throw new EntityNotFoundException("Não foi possível encontrar um contratante com ID: " + id);
         }
+
+        for (CreatePublicacaoDTO publicacaoDTO : publicacaoDTOS) {
+            fila.insert(new Publicacao(publicacaoDTO, contratante));
+        }
+
+    }
+
+    public List<Publicacao> realizarPublicacoesAgendadas(Integer qtdPublicacoes) {
+        if (fila.isEmpty()) {
+            throw new IllegalStateException("Não há nada para ser publicado!");
+        }
+
+        if (qtdPublicacoes > fila.getTamanho()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Não há publicações o suficiente para publicar nessa quantidade. Publicações agendadas: " +fila.getTamanho());
+        }
+
+        List<Publicacao> publicacoesASeremPostadas = new ArrayList<>();
+        for (int i = 0; i < qtdPublicacoes; i++) {
+            fila.exibe();
+            var publicacao = fila.poll();
+            if (publicacao != null) {
+                publicacoesASeremPostadas.add(publicacao);
+            }
+        }
+        repository.saveAll(publicacoesASeremPostadas);
+        return publicacoesASeremPostadas;
     }
 }

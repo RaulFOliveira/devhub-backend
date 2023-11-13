@@ -2,6 +2,7 @@ package com.devhub.api.controller;
 
 import com.devhub.api.FilaObj;
 import com.devhub.api.ListaObj;
+import com.devhub.api.domain.publicacao.dto.CreatePublicacaoAgendadaDTO;
 import com.devhub.api.domain.publicacao.dto.CreatePublicacaoDTO;
 import com.devhub.api.domain.publicacao.dto.DetailPublicacaoDTO;
 import com.devhub.api.domain.publicacao.Publicacao;
@@ -32,11 +33,17 @@ public class PublicacaoController {
         return ResponseEntity.created(uri).body(new DetailPublicacaoDTO(publicacao));
     }
 
-    @PostMapping("/agendar-publicacao/{id}")
+    @PostMapping("/agendar/{id}")
     public ResponseEntity agendarPublicacoes(
             @RequestBody @Valid List<CreatePublicacaoDTO> data, @PathVariable Long id, UriComponentsBuilder uriBuilder) {
-        service.enfileirarPublicacoes(data);
+        service.enfileirarPublicacoes(data, id);
         return ResponseEntity.status(200).build();
+    }
+
+    @PostMapping("/agendar")
+    public ResponseEntity publicarAgendados(@RequestBody @Valid CreatePublicacaoAgendadaDTO data) {
+        var publicacoesAgendadas = service.realizarPublicacoesAgendadas(data.qtdPublicacoes());
+        return ResponseEntity.status(201).body(publicacoesAgendadas);
     }
     @GetMapping
     public ResponseEntity<List<Publicacao>> mostrarPublicacoes() {
