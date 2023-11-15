@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest(classes = PublicacaoService.class)
 class PublicacaoServiceTest {
@@ -105,6 +105,10 @@ class PublicacaoServiceTest {
         when(especialidadeDesejadaRepo.saveAll(especialidadeDesejadas)).thenReturn(especialidadeDesejadas);
 
         service.realizarPublicacao(publicacaoDTOMock, id);
+
+        verify(repo, times(1)).save(any(Publicacao.class));
+        verify(contratanteRepo, times(1)).getReferenceById(id);
+        verify(especialidadeDesejadaRepo, times(1)).saveAll(anyList());
 
         assertEquals(publicacaoMock.getId(), publicacao.getId());
         assertEquals(especialidadeDesejadaMock.getId(), especialidadeDesejadas.get(0).getId());
