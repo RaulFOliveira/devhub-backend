@@ -17,10 +17,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -73,9 +76,9 @@ class PublicacaoServiceTest {
 
         );
         this.publicacaoDTOEspecMock = new CreatePublicacaoDTO(
-                "titulo teste",
-                "descricao teste",
-                especialidadeDesejadaDTOSEspec
+                null,
+                null,
+                null
 
         );
         this.contratanteMock = new Contratante(contratanteDTO);
@@ -130,21 +133,23 @@ class PublicacaoServiceTest {
 
     @Test
     @DisplayName("Realizar publicação não tem especialidades desejadas")
-    void realizarPublicacaoEspecialidades() {
+    void realizarPublicacaoNulos() {
         Long id = 1L;
         when(contratanteRepo.getReferenceById(id))
                 .thenReturn(contratanteMock);
 
-        List<EspecialidadeDesejadaDTO> listaEspecialidades = new ArrayList<>();
         var publicacao = new Publicacao(
-                new CreatePublicacaoDTO("titulo teste","descricao teste", listaEspecialidades),
+                new CreatePublicacaoDTO("","", new ArrayList<>()),
                 contratanteMock);
 
-        when(repo.save(publicacao)).thenThrow(new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                "especialidades desejadas não deve ser nulo"));
+        // Configurar comportamento simulado do BindingResult
+        BindingResult bindingResult = mock(BindingResult.class);
+        when(bindingResult.hasErrors()).thenReturn(true);
 
-        var exception = assertThrows(ResponseStatusException.class,
+        // Chamar o método que deve lançar a exceção
+        var exception = assertThrows(MethodArgumentNotValidException.class,
                 () -> service.realizarPublicacao(publicacaoDTOEspecMock, id));
+
         assertEquals(400, exception.getStatusCode().value());
     }
 

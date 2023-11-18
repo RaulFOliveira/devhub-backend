@@ -54,15 +54,6 @@ public class FreelancerService {
         freelancer.setSenha(encryptedPassword);
 
         repository.save(freelancer);
-
-        var listaEspecialidades = data.especialidades();
-
-        List<Especialidade> especialidades = new ArrayList<>();
-        for (EspecialidadeDTO dataEspec : listaEspecialidades) {
-            especialidades.add(new Especialidade(dataEspec, freelancer));
-        }
-        especialidadeRepository.saveAll(especialidades);
-
         return freelancer;
     }
 
@@ -125,5 +116,20 @@ public class FreelancerService {
             throw new EntityNotFoundException();
         }
         freelancer.excluir();
+    }
+
+    public List<Especialidade> cadastrarEspecialidades(List<EspecialidadeDTO> lista, Long id) {
+        var freelancer = repository.getReferenceById(id);
+        if (freelancer == null) {
+            throw new EntityNotFoundException();
+        }
+
+
+        List<Especialidade> especialidades = new ArrayList<>();
+        for (EspecialidadeDTO especialidade : lista) {
+            especialidades.add(new Especialidade(especialidade, freelancer));
+        }
+        especialidadeRepository.saveAll(especialidades);
+        return especialidades;
     }
 }

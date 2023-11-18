@@ -1,6 +1,8 @@
 package com.devhub.api.controller;
 
+import com.devhub.api.domain.especialidade.EspecialidadeDTO;
 import com.devhub.api.domain.especialidade.EspecialidadeRepository;
+import com.devhub.api.domain.especialidade.EspecialidadesEnum;
 import com.devhub.api.domain.freelancer.*;
 import com.devhub.api.domain.freelancer.dto.CreateFreelancerDTO;
 import com.devhub.api.domain.freelancer.dto.DetailFreelancerDTO;
@@ -22,6 +24,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RestController
 @RequestMapping(value = "/freelancers", produces = {"application/json"})
 @Tag(name = "Api DevHub")
@@ -31,9 +37,6 @@ public class FreelancerController {
     private FreelancerService service;
     @Autowired
     private FreelancerRepository repository;
-    @Autowired
-    private EspecialidadeRepository especialidadeRepository;
-
 
     @Operation(summary = "Realiza a criaçâo do freelancer", method = "POST")
     @ApiResponses(value = {
@@ -47,6 +50,12 @@ public class FreelancerController {
         var freelancer = service.cadastrarFreelancer(data);
         var uri = uriBuilder.path("/freelancers/{id}").buildAndExpand(freelancer.getId()).toUri();
         return ResponseEntity.created(uri).body(freelancer);
+    }
+
+    @PostMapping("/{id}/especialidades")
+    public ResponseEntity createEspecialidades(List<EspecialidadeDTO> data, Long id) {
+        var especialidades = service.cadastrarEspecialidades(data, id);
+        return ResponseEntity.status(201).body(especialidades);
     }
 
     @Operation(summary = "Realiza a listagenm dos Freelancers", method = "GET")
@@ -112,7 +121,6 @@ public class FreelancerController {
     })
 
     @PatchMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-
     public ResponseEntity ativarConta(@PathVariable Long id) {
         var freelancer = repository.getReferenceById(id);
         freelancer.ativarConta();

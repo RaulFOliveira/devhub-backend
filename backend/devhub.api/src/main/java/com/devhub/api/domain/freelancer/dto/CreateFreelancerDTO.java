@@ -29,9 +29,6 @@ public record CreateFreelancerDTO(
         Funcao funcao,
         @NotNull
         Double valorHora,
-        @NotNull
-        @Valid
-        List<EspecialidadeDTO> especialidades,
         @NotBlank
         String descricao,
         @NotBlank
