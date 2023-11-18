@@ -29,8 +29,8 @@ public class Especialidade {
     @JoinColumn(name = "fk_freelancer")
     private Freelancer freelancer;
 
-    public Especialidade(EspecialidadeDTO data, Freelancer freelancer) {
-        this.descricao = data.descricao();
+    public Especialidade(String data, Freelancer freelancer) {
+        this.descricao = data;
         this.freelancer = freelancer;
     }
 }

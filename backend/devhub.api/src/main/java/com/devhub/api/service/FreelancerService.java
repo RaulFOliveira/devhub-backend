@@ -118,7 +118,7 @@ public class FreelancerService {
         freelancer.excluir();
     }
 
-    public List<Especialidade> cadastrarEspecialidades(List<EspecialidadeDTO> lista, Long id) {
+    public List<Especialidade> cadastrarEspecialidades(List<String> lista, Long id) {
         var freelancer = repository.getReferenceById(id);
         if (freelancer == null) {
             throw new EntityNotFoundException();
@@ -126,7 +126,7 @@ public class FreelancerService {
 
 
         List<Especialidade> especialidades = new ArrayList<>();
-        for (EspecialidadeDTO especialidade : lista) {
+        for (String especialidade : lista) {
             especialidades.add(new Especialidade(especialidade, freelancer));
         }
         especialidadeRepository.saveAll(especialidades);

@@ -53,7 +53,7 @@ public class FreelancerController {
     }
 
     @PostMapping("/{id}/especialidades")
-    public ResponseEntity createEspecialidades(List<EspecialidadeDTO> data, Long id) {
+    public ResponseEntity createEspecialidades(@RequestBody List<String> data, @PathVariable Long id) {
         var especialidades = service.cadastrarEspecialidades(data, id);
         return ResponseEntity.status(201).body(especialidades);
     }

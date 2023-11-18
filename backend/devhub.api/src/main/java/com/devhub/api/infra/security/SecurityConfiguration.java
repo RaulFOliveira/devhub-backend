@@ -35,6 +35,7 @@ public class SecurityConfiguration {
                     req.requestMatchers(HttpMethod.POST, "/login").permitAll();
                     //CADASTRO
                     req.requestMatchers(HttpMethod.POST, "/freelancers").permitAll();
+                    req.requestMatchers(HttpMethod.POST, "/freelancers/**").permitAll();
                     req.requestMatchers(HttpMethod.POST, "/contratantes").permitAll();
                     //ENCERRAMENTO DE SERVICO
                     req.requestMatchers(HttpMethod.POST, "/servicos").hasRole("CONTRATANTE");
@@ -46,7 +47,7 @@ public class SecurityConfiguration {
                     req.requestMatchers("/v3/api-docs/**").permitAll();
                     req.requestMatchers("/swagger-resources/**").permitAll();
 
-                    req.requestMatchers("/especialidiades/**").permitAll();
+                    req.requestMatchers("/especialidades/**").permitAll();
                     req.anyRequest().authenticated();
                 })
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
