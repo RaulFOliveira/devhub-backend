@@ -15,8 +15,7 @@ public enum EspecialidadesEnum {
     RUST("Rust"),
     OBJECTIVE_C("Objective-C"),
     SQL("SQL"),
-    HTML_CSS("HTML/CSS"),
-    SHELL_SCRIPTING("Shell Scripting"),
+    SHELL_SCRIPT("Shell Script"),
     MATLAB("MATLAB"),
     R("R"),
     SCALA("Scala"),
@@ -32,7 +31,7 @@ public enum EspecialidadesEnum {
     REACT("React"),
     VUE_JS("Vue.js"),
     EXPRESS_JS("Express.js"),
-    SPRING("Spring"),
+    SPRINGBOOT("SpringBoot"),
     DJANGO("Django"),
     RUBY_ON_RAILS("Ruby on Rails"),
     ANDROID("Android"),
@@ -40,17 +39,15 @@ public enum EspecialidadesEnum {
     AWS("AWS"),
     AZURE("Azure"),
     GOOGLE_CLOUD("Google Cloud"),
-    DEVOPS("DevOps"),
     CI_CD("CI/CD"),
-    CONTAINERS("Containers"),
-    VIRTUALIZATION("Virtualization"),
     BANCO_DE_DADOS("Banco de Dados"),
     ARQUITETURA_DE_SOFTWARE("Arquitetura de Software"),
     DESIGN_PATTERNS("Design Patterns"),
-    TESTES_AUTOMATIZADOS("Testes Automatizados"),
-    CONTROLE_DE_VERSAO("Controle de Versão"),
     METODOLOGIAS_AGILE("Metodologias Ágeis"),
-    DESENVOLVIMENTO_ORIENTADO_A_OBJETOS("Desenvolvimento Orientado a Objetos");
+    AZURE_DEVOPS("Azure DevOps"),
+    JIRA("Jira"),
+    TRELLO("Trello"),
+    PLANNER("Planner");
 
     private final String especialidade;
 
