@@ -10,9 +10,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.util.List;
 
 @Table(name = "freelancer")
@@ -36,8 +34,9 @@ public class Freelancer extends Usuario {
 
     private String senioridade;
 
-    @Column(length = 10 * 1024 * 1024)
-    private byte[] imagem;
+//    @JsonIgnore
+//    @Column(length = 10 * 1024 * 1024)
+//    private byte[] imagem;
 
     public Freelancer() {
         super();
@@ -45,7 +44,7 @@ public class Freelancer extends Usuario {
 
     public Freelancer(CreateFreelancerDTO data) {
         super(data.nome(), data.telefone(),data.email(), data.senha(), UserRole.FREELANCER);
-        this.cpf = data.identificador();
+        this.cpf = data.cpf();
         this.funcao = data.funcao();
         this.valorHora = data.valorHora();
         this.descricao = data.descricao();

@@ -11,6 +11,5 @@ create table freelancer (
     funcao varchar(100) not null,
     valor_hora decimal(7,2) not null,
     descricao text not null,
-    senioridade varchar(6) not null,
-    imagem longblob not null
+    senioridade varchar(6) not null
 );

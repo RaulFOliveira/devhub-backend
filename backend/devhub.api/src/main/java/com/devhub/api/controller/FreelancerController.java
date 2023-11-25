@@ -9,8 +9,6 @@ import com.devhub.api.domain.freelancer.dto.DetailFreelancerDTO;
 import com.devhub.api.domain.freelancer.dto.ListFreelancerDTO;
 import com.devhub.api.domain.freelancer.dto.UpdateFreelancerDTO;
 import com.devhub.api.service.FreelancerService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -24,10 +22,8 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -42,8 +38,6 @@ public class FreelancerController {
     @Autowired
     private FreelancerRepository repository;
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
-
     @Operation(summary = "Realiza a criaçâo do freelancer", method = "POST")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Freelancer criado com sucesso"),
@@ -51,10 +45,9 @@ public class FreelancerController {
             @ApiResponse(responseCode = "400", description = "Parametros inválidos"),
             @ApiResponse(responseCode = "500", description = "Erro ao realizar a validação do token"),
     })
-    @PostMapping
-    public ResponseEntity createFreelancer(@RequestParam("image") MultipartFile image, @RequestParam("userInfo") String userInfo, UriComponentsBuilder uriBuilder) throws IOException {
-        CreateFreelancerDTO user = objectMapper.readValue(userInfo, CreateFreelancerDTO.class);
-        var freelancer = service.cadastrarFreelancer(user, image);
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity createFreelancer(@Valid @RequestBody CreateFreelancerDTO data, UriComponentsBuilder uriBuilder) {
+        var freelancer = service.cadastrarFreelancer(data);
         var uri = uriBuilder.path("/freelancers/{id}").buildAndExpand(freelancer.getId()).toUri();
         return ResponseEntity.created(uri).body(freelancer);
     }
