@@ -8,6 +8,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import org.hibernate.validator.constraints.br.CPF;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -16,7 +17,7 @@ public record CreateFreelancerDTO(
         String nome,
         @NotBlank
         @CPF
-        String cpf,
+        String identificador,
         @NotBlank
         @Pattern(regexp = "\\d{11}")
         String telefone,

@@ -18,8 +18,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +37,7 @@ public class FreelancerService {
     private ContratanteRepository contratanteRepository;
 
     @Transactional
-    public Freelancer cadastrarFreelancer(CreateFreelancerDTO data) {
+    public Freelancer cadastrarFreelancer(CreateFreelancerDTO data, MultipartFile file) throws IOException {
         
         List<FreelancerValidacaoDTO> dadosFreelancer = repository.validarDadosUnicos();
         List<ContratanteValidacaoDTO> dadosContratante = contratanteRepository.validarDadosUnicos();
@@ -50,6 +53,8 @@ public class FreelancerService {
         }
         var freelancer = new Freelancer(data);
         String encryptedPassword = new BCryptPasswordEncoder().encode(data.senha());
+
+        freelancer.setImagem(file.getBytes());
 
         freelancer.setSenha(encryptedPassword);
 
@@ -68,7 +73,7 @@ public class FreelancerService {
                 if (f.getTelefone().equalsIgnoreCase(data.telefone())) {
                     listaCampos.add("Telefone");
                 }
-                if (f.getCpf().equalsIgnoreCase(data.cpf())) {
+                if (f.getCpf().equalsIgnoreCase(data.identificador())) {
                     listaCampos.add("CPF");
                 }
             } else if (conta instanceof ContratanteValidacaoDTO c) {
