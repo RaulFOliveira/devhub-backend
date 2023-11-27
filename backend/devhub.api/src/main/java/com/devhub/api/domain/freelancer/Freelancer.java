@@ -35,6 +35,10 @@ public class Freelancer extends Usuario {
     private String senioridade;
 
 //    @JsonIgnore
+//    @Column(length = 10 * 1024 * 1024) // definindo o tamanho em 10MB
+//    private byte[] foto;
+
+//    @JsonIgnore
 //    @Column(length = 10 * 1024 * 1024)
 //    private byte[] imagem;
 

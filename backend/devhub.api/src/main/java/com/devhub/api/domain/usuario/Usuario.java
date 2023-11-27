@@ -30,6 +30,12 @@ public abstract class Usuario implements UserDetails {
     protected Boolean ativo;
 
     @JsonIgnore
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    @Column(length = 10 * 1024 * 1024)
+    private byte[] imagem;
+
+    @JsonIgnore
     @Enumerated(EnumType.STRING)
     private UserRole role;
 

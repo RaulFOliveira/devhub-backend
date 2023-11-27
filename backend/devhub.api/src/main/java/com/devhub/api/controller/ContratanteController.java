@@ -20,7 +20,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping(value = "/contratantes", produces = {"application/json"})
@@ -98,5 +101,11 @@ public class ContratanteController {
         var contratante = repository.getReferenceById(id);
         contratante.ativarConta();
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping(value = "/foto/{codigo}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Void> patchFoto(@PathVariable int codigo,
+                                          @RequestPart("image") MultipartFile novaFoto) throws IOException {
+        return ResponseEntity.status(service.atualizarFoto(novaFoto, codigo)).build();
     }
 }

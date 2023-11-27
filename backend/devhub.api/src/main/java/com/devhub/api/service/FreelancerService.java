@@ -18,8 +18,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -131,5 +133,14 @@ public class FreelancerService {
         }
         especialidadeRepository.saveAll(especialidades);
         return especialidades;
+    }
+
+    public Integer atualizarFoto(MultipartFile novaFoto, Integer idFreelancer) throws IOException {
+        byte[] novaFotoByte = novaFoto.getBytes();
+        int atualizados = repository.atualizarFoto(novaFotoByte, idFreelancer);
+
+        int status = atualizados == 1 ? 200 : 404;
+
+        return status;
     }
 }

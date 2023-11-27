@@ -22,6 +22,6 @@ public class UsuarioService {
         var token = jwtTokenProvider.gerarToken((Usuario) auth.getPrincipal());
         var dadosUser = (Usuario) auth.getPrincipal();
 
-        return new TokenJWTData(token, dadosUser.getId(), dadosUser.getNome(), dadosUser.getEmail());
+        return new TokenJWTData(token, dadosUser.getId(), dadosUser.getNome(), dadosUser.getEmail(),dadosUser.getRole(), dadosUser.getImagem());
     }
 }

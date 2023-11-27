@@ -22,14 +22,16 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping(value = "/freelancers", produces = {"application/json"})
+@RequestMapping(value = "/freelancers")
 @Tag(name = "Api DevHub")
 public class FreelancerController {
 
@@ -79,7 +81,7 @@ public class FreelancerController {
             @ApiResponse(responseCode = "500", description = "Erro ao realizar a listagem do freelancer respectivo"),
     })
 
-    @GetMapping(value = "/{id}",consumes = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/{id}")
     public ResponseEntity<ListFreelancerDTO> listarFreelancerById(@PathVariable Long id) {
         var freelancer = service.getFreelancerById(id);
         return ResponseEntity.ok(new ListFreelancerDTO(freelancer));
@@ -125,5 +127,11 @@ public class FreelancerController {
         var freelancer = repository.getReferenceById(id);
         freelancer.ativarConta();
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping(value = "/foto/{codigo}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Void> patchFoto(@PathVariable int codigo,
+                                          @RequestPart("image") MultipartFile novaFoto) throws IOException {
+        return ResponseEntity.status(service.atualizarFoto(novaFoto, codigo)).build();
     }
 }

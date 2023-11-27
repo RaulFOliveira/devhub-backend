@@ -7,5 +7,6 @@ create table contratante (
     senha varchar(255) not null,
     role varchar(11) not null,
     ativo tinyint not null,
-    cnpj varchar(14) not null unique
+    cnpj varchar(14) not null unique,
+    imagem longblob
 );

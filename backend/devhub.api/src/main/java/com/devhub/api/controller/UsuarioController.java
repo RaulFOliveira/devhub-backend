@@ -27,4 +27,5 @@ public class UsuarioController {
     public ResponseEntity login(@RequestBody @Valid AutenticacaoData loginRequest) {
         return ResponseEntity.ok(service.login(loginRequest));
     }
+
 }
