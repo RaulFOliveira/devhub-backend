@@ -72,7 +72,7 @@ public class FreelancerController {
             @ApiResponse(responseCode = "500", description = "Erro ao realizar a listagem do freelancer respectivo"),
     })
 
-    @GetMapping(value = "/{id}",consumes = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/{id}")
     public ResponseEntity<PerfilFreelancerDTO> listarFreelancerById(@PathVariable Long id) {
         var freelancer = service.getFreelancerById(id);
         return ResponseEntity.ok(new PerfilFreelancerDTO(freelancer));
