@@ -5,6 +5,7 @@ import com.devhub.api.domain.contratante.dto.CreateContratanteDTO;
 import com.devhub.api.domain.contratante.dto.DetailContratanteDTO;
 import com.devhub.api.domain.contratante.dto.ListContratanteDTO;
 import com.devhub.api.domain.contratante.dto.UpdateContratanteDTO;
+import com.devhub.api.domain.freelancer.dto.PerfilFreelancerDTO;
 import com.devhub.api.service.ContratanteService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -60,6 +61,12 @@ public class ContratanteController {
     public ResponseEntity<Page<ListContratanteDTO>> listar(@PageableDefault(size = 5, sort = {"nome"}) Pageable paginacao) {
         var page = service.getContratantes(paginacao);
         return ResponseEntity.ok(page);
+    }
+
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<ListContratanteDTO> listarFreelancerById(@PathVariable Long id) {
+        var contratante = service.getContratanteById(id);
+        return ResponseEntity.ok(new ListContratanteDTO(contratante));
     }
 
     @Operation(summary = "Realiza a atualizaçao de um dos Contratantes", method = "PUT")

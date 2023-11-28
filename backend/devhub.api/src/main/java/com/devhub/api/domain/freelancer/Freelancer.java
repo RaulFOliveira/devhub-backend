@@ -59,6 +59,9 @@ public class Freelancer extends Usuario {
         if (data.descricao() != null) {
             this.descricao = data.descricao();
         }
+        if(data.funcao() != null){
+            this.funcao = data.funcao();
+        }
         if (data.valorHora() != null) {
             this.valorHora = data.valorHora();
         }
