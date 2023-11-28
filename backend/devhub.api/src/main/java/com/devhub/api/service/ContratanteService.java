@@ -90,9 +90,6 @@ public class ContratanteService {
 
     public Page<ListContratanteDTO> getContratantes(Pageable paginacao) {
         var page = repository.findAllByAtivoTrue(paginacao).map(ListContratanteDTO::new);
-        if (!page.hasContent()) {
-            throw new ResponseStatusException(HttpStatus.NO_CONTENT);
-        }
         return page;
     }
 

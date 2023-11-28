@@ -1,13 +1,7 @@
 package com.devhub.api.controller;
 
-import com.devhub.api.domain.especialidade.EspecialidadeDTO;
-import com.devhub.api.domain.especialidade.EspecialidadeRepository;
-import com.devhub.api.domain.especialidade.EspecialidadesEnum;
 import com.devhub.api.domain.freelancer.*;
-import com.devhub.api.domain.freelancer.dto.CreateFreelancerDTO;
-import com.devhub.api.domain.freelancer.dto.DetailFreelancerDTO;
-import com.devhub.api.domain.freelancer.dto.ListFreelancerDTO;
-import com.devhub.api.domain.freelancer.dto.UpdateFreelancerDTO;
+import com.devhub.api.domain.freelancer.dto.*;
 import com.devhub.api.service.FreelancerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -28,7 +22,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/freelancers")
@@ -37,8 +30,6 @@ public class FreelancerController {
 
     @Autowired
     private FreelancerService service;
-    @Autowired
-    private FreelancerRepository repository;
 
     @Operation(summary = "Realiza a criaçâo do freelancer", method = "POST")
     @ApiResponses(value = {
@@ -67,9 +58,9 @@ public class FreelancerController {
             @ApiResponse(responseCode = "400", description = "Parametros inválidos"),
             @ApiResponse(responseCode = "500", description = "Erro ao realizar a listagem dos Freelancers"),
     })
-    @GetMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Page<ListFreelancerDTO>> listar(@PageableDefault(size = 5, sort = {"nome"}) Pageable paginacao) {
-        var page = service.getFreelancers(paginacao);
+    @GetMapping
+    public ResponseEntity<List<ListaFreelancerDTO>> listar() {
+        var page = service.getFreelancers();
         return ResponseEntity.ok(page);
     }
 
@@ -81,10 +72,10 @@ public class FreelancerController {
             @ApiResponse(responseCode = "500", description = "Erro ao realizar a listagem do freelancer respectivo"),
     })
 
-    @GetMapping(value = "/{id}")
-    public ResponseEntity<ListFreelancerDTO> listarFreelancerById(@PathVariable Long id) {
+    @GetMapping(value = "/{id}",consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<PerfilFreelancerDTO> listarFreelancerById(@PathVariable Long id) {
         var freelancer = service.getFreelancerById(id);
-        return ResponseEntity.ok(new ListFreelancerDTO(freelancer));
+        return ResponseEntity.ok(new PerfilFreelancerDTO(freelancer));
     }
 
     @Operation(summary = "Realiza a atualização de um dos freelancers", method = "PUT")
@@ -113,21 +104,21 @@ public class FreelancerController {
         return ResponseEntity.noContent().build();
     }
 
-    @Transactional
-    @Operation(summary = "Realiza a ativaçao de uma conta de Freelancer", method = "PATCH")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Conta ativada com sucesso"),
-            @ApiResponse(responseCode = "422", description = "Dados de requisição inválida"),
-            @ApiResponse(responseCode = "400", description = "Parametros inválidos"),
-            @ApiResponse(responseCode = "500", description = "Erro ao realizar a ativaçao da conta"),
-    })
-
-    @PatchMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity ativarConta(@PathVariable Long id) {
-        var freelancer = repository.getReferenceById(id);
-        freelancer.ativarConta();
-        return ResponseEntity.noContent().build();
-    }
+//    @Transactional
+//    @Operation(summary = "Realiza a ativaçao de uma conta de Freelancer", method = "PATCH")
+//    @ApiResponses(value = {
+//            @ApiResponse(responseCode = "200", description = "Conta ativada com sucesso"),
+//            @ApiResponse(responseCode = "422", description = "Dados de requisição inválida"),
+//            @ApiResponse(responseCode = "400", description = "Parametros inválidos"),
+//            @ApiResponse(responseCode = "500", description = "Erro ao realizar a ativaçao da conta"),
+//    })
+//
+//    @PatchMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+//    public ResponseEntity ativarConta(@PathVariable Long id) {
+//        var freelancer = repository.getReferenceById(id);
+//        freelancer.ativarConta();
+//        return ResponseEntity.noContent().build();
+//    }
 
     @PatchMapping(value = "/foto/{codigo}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> patchFoto(@PathVariable int codigo,

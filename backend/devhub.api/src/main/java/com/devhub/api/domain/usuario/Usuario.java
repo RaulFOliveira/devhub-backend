@@ -35,7 +35,7 @@ public abstract class Usuario implements UserDetails {
     @Column(length = 10 * 1024 * 1024)
     private byte[] imagem;
 
-    @JsonIgnore
+    @Getter
     @Enumerated(EnumType.STRING)
     private UserRole role;
 

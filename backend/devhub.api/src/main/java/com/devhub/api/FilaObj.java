@@ -1,5 +1,9 @@
 package com.devhub.api;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.web.server.ResponseStatusException;
+
 public class FilaObj<T>{
 
     // Atributos
@@ -30,7 +34,7 @@ public class FilaObj<T>{
      */
     public void insert(T info) {
         if (isFull()){
-            throw new IllegalStateException();
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY);
         } else {
             fila[tamanho] = info;
             tamanho++;
