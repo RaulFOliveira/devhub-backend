@@ -46,7 +46,6 @@ public class PublicacaoService {
         repository.save(publicacao);
 
         var listaEspecialidades = data.especialidadesDesejadas();
-
         List<EspecialidadeDesejada> especialidadeDesejadas = new ArrayList<>();
         for (EspecialidadeDesejadaDTO dataEspec : listaEspecialidades) {
             especialidadeDesejadas.add(new EspecialidadeDesejada(dataEspec, publicacao));
@@ -58,10 +57,6 @@ public class PublicacaoService {
 
     public List<Publicacao> mostrarPublicacoes() {
         var publicacoes = repository.findAllByOrderByCreatedAtDesc();
-
-        if (publicacoes.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NO_CONTENT);
-        }
 
 //        for (Publicacao publicacao: publicacoes) {
 //            listaPublicacao.adiciona(publicacao);
@@ -80,17 +75,14 @@ public class PublicacaoService {
         return publicacoes;
     }
     public List<Publicacao> mostrarPublicacoesByid(Long id) {
-        var contratante = contratanteRepository.getReferenceById(id);
+        var contratante = contratanteRepository.findById(id);
 
-        if (contratante.equals(null)) {
-            throw new EntityNotFoundException("Não foi possível encontrar um contratante com ID: " + id);
+        if (contratante.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                    "Não foi possível encontrar um contratante com ID: " + id);
         }
 
-        var publicacoes = repository.findByContratante(contratante);
-
-        if (publicacoes.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NO_CONTENT);
-        }
+        var publicacoes = repository.findByContratante(contratante.get());
 
 //        for (Publicacao publicacao: publicacoes) {
 //            listaPublicacao.adiciona(publicacao);
@@ -111,32 +103,33 @@ public class PublicacaoService {
 
     @Transactional
     public void deletarPublicacao(Long id) {
-        var publicacao = repository.getReferenceById(id);
-        if (publicacao.equals(null)) {
-            throw new EntityNotFoundException();
+        var publicacao = repository.findById(id);
+        if (publicacao.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-
-        especialidadeDesejadaRepository.deleteAllByFkPublicacao(publicacao);
-        repository.delete(publicacao);
+        especialidadeDesejadaRepository.deleteAllByFkPublicacao(publicacao.get());
+        repository.delete(publicacao.get());
     }
 
     public void enfileirarPublicacoes(List<CreatePublicacaoDTO> publicacaoDTOS, Long id) {
 
 
-        var contratante = contratanteRepository.getReferenceById(id);
-        if (contratante.equals(null)) {
-            throw new EntityNotFoundException("Não foi possível encontrar um contratante com ID: " + id);
+        var contratante = contratanteRepository.findById(id);
+        if (contratante.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                    "Não foi possível encontrar um contratante com ID: " + id);
         }
 
         for (CreatePublicacaoDTO publicacaoDTO : publicacaoDTOS) {
-            fila.insert(new Publicacao(publicacaoDTO, contratante));
+            fila.insert(new Publicacao(publicacaoDTO, contratante.get()));
         }
 
     }
 
     public List<Publicacao> realizarPublicacoesAgendadas(Integer qtdPublicacoes) {
         if (fila.isEmpty()) {
-            throw new IllegalStateException("Não há nada para ser publicado!");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                    "Não há nada para ser publicado!");
         }
 
         if (qtdPublicacoes > fila.getTamanho()) {

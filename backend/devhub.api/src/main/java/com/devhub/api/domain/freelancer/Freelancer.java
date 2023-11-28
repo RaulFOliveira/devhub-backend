@@ -6,7 +6,6 @@ import com.devhub.api.domain.freelancer.dto.UpdateFreelancerDTO;
 import com.devhub.api.domain.funcao.Funcao;
 import com.devhub.api.domain.usuario.UserRole;
 import com.devhub.api.domain.usuario.Usuario;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -34,14 +33,6 @@ public class Freelancer extends Usuario {
 
     private String senioridade;
 
-//    @JsonIgnore
-//    @Column(length = 10 * 1024 * 1024) // definindo o tamanho em 10MB
-//    private byte[] foto;
-
-//    @JsonIgnore
-//    @Column(length = 10 * 1024 * 1024)
-//    private byte[] imagem;
-
     public Freelancer() {
         super();
     }
@@ -53,7 +44,6 @@ public class Freelancer extends Usuario {
         this.valorHora = data.valorHora();
         this.descricao = data.descricao();
         this.senioridade = data.senioridade();
-//        this.imagem = null;
     }
 
     public void atuallizarInformacoes(UpdateFreelancerDTO data) {

@@ -1,15 +1,13 @@
 package com.devhub.api.service;
 
+import com.devhub.api.domain.avaliacao_freelancer.AvaliacaoFreelancerRepository;
 import com.devhub.api.domain.contratante.ContratanteRepository;
 import com.devhub.api.domain.contratante.dto.ContratanteValidacaoDTO;
 import com.devhub.api.domain.especialidade.Especialidade;
-import com.devhub.api.domain.especialidade.EspecialidadeDTO;
 import com.devhub.api.domain.especialidade.EspecialidadeRepository;
 import com.devhub.api.domain.freelancer.*;
-import com.devhub.api.domain.freelancer.dto.CreateFreelancerDTO;
-import com.devhub.api.domain.freelancer.dto.FreelancerValidacaoDTO;
-import com.devhub.api.domain.freelancer.dto.ListFreelancerDTO;
-import com.devhub.api.domain.freelancer.dto.UpdateFreelancerDTO;
+import com.devhub.api.domain.freelancer.dto.*;
+import com.devhub.api.domain.usuario.UserRole;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +32,8 @@ public class FreelancerService {
     private EspecialidadeRepository especialidadeRepository;
     @Autowired
     private ContratanteRepository contratanteRepository;
+    @Autowired
+    private AvaliacaoFreelancerRepository avaliacaoRepo;
 
     @Transactional
     public Freelancer cadastrarFreelancer(CreateFreelancerDTO data) {
@@ -86,13 +86,17 @@ public class FreelancerService {
         return camposJaCadastrados += campos;
     }
 
-    public Page<ListFreelancerDTO> getFreelancers(Pageable paginacao) {
-        var page = repository.findAllByAtivoTrue(paginacao).map(ListFreelancerDTO::new);
-        if (!page.hasContent()) {
-            throw new ResponseStatusException(HttpStatus.NO_CONTENT);
-        }
-        return page;
+    public List<ListaFreelancerDTO> getFreelancers() {
+        var freelancers = repository.findAll();
+        List<ListaFreelancerDTO> dtos = freelancers.stream()
+                        .map(f -> new ListaFreelancerDTO(
+                            f.getId(), f.getNome(), f.getImagem(), f.getFuncao(),
+                            f.getSenioridade(), f.getValorHora(),
+                            avaliacaoRepo.somarTodasAsNotas(f)
+                        )).toList();
+        return dtos;
     }
+
     public Freelancer getFreelancerById(Long id) {
         var freelancer = repository.getReferenceById(id);
         if (freelancer == null) {

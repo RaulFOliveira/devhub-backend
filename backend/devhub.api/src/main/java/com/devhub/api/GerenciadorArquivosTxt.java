@@ -1,13 +1,5 @@
 //package com.devhub.api;
 //
-//import com.devhub.api.domain.contratante.Contratante;
-//import com.devhub.api.domain.contratante.ContratanteRepository;
-//import com.devhub.api.domain.freelancer.Freelancer;
-//import com.devhub.api.domain.freelancer.FreelancerRepository;
-//import com.devhub.api.domain.servico.CreateServicoDTO;
-//import com.devhub.api.domain.servico.Servico;
-//import com.devhub.api.domain.servico.ServicoRepository;
-//import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.context.annotation.Configuration;
 //
 //import java.io.*;
@@ -19,17 +11,7 @@
 //@Configuration
 //public class GerenciadorArquivosTxt {
 //
-//    private ServicoRepository repository;
-//    private ContratanteRepository contratanteRepository;
-//    private FreelancerRepository freelancerRepository;
-//
-//    public GerenciadorArquivosTxt(ServicoRepository repository, ContratanteRepository contratanteRepository, FreelancerRepository freelancerRepository) {
-//        this.repository = repository;
-//        this.contratanteRepository = contratanteRepository;
-//        this.freelancerRepository = freelancerRepository;
-//    }
-//
-//    static List<Servico> listaLida = new ArrayList<>();
+//    static List<Produto> listaLida = new ArrayList<>();
 //
 //    public static void gravaRegistro(String registro, String nomeArq) {
 //        BufferedWriter saida = null;
