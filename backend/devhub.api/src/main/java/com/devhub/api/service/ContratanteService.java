@@ -6,10 +6,8 @@ import com.devhub.api.domain.contratante.dto.ContratanteValidacaoDTO;
 import com.devhub.api.domain.contratante.dto.CreateContratanteDTO;
 import com.devhub.api.domain.contratante.dto.ListContratanteDTO;
 import com.devhub.api.domain.contratante.dto.UpdateContratanteDTO;
-import com.devhub.api.domain.freelancer.Freelancer;
 import com.devhub.api.domain.freelancer.FreelancerRepository;
 import com.devhub.api.domain.freelancer.dto.FreelancerValidacaoDTO;
-import com.devhub.api.domain.freelancer.dto.UpdateFreelancerDTO;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,17 +86,25 @@ public class ContratanteService {
         return camposJaCadastrados += campos;
     }
 
-    public Page<ListContratanteDTO> getContratantes(Pageable paginacao) {
-        var page = repository.findAllByAtivoTrue(paginacao).map(ListContratanteDTO::new);
-        return page;
+    public List<ListContratanteDTO> getContratantes() {
+        List<Contratante > contratantes = repository.findAllByAtivoTrue();
+        List<ListContratanteDTO> dtos = contratantes.stream().map(c -> new ListContratanteDTO(
+                        c.getId(), c.getNome(), c.getCnpj(),
+                        c.getTelefone(), c.getEmail(), c.getImagem(),
+                        c.getContratacoes()
+                )).toList();
+        return dtos;
     }
 
-    public Contratante getContratanteById(Long id) {
+    public ListContratanteDTO getContratanteById(Long id) {
         var contratante = repository.getReferenceById(id);
         if (contratante == null) {
             throw new EntityNotFoundException();
         }
-        return contratante;
+        return new ListContratanteDTO(
+                contratante.getId(), contratante.getNome(), contratante.getCnpj(),
+                contratante.getTelefone(), contratante.getEmail(), contratante.getImagem(),
+                contratante.getContratacoes());
     }
 
     @Transactional

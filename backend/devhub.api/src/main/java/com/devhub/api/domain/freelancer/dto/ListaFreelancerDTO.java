@@ -16,5 +16,9 @@ public record ListaFreelancerDTO (
         Double valorHora,
         Double nota
 ){
-
+    public ListaFreelancerDTO(Freelancer freelancer, Double nota) {
+        this(freelancer.getId(), freelancer.getNome(), freelancer.getImagem(),
+                freelancer.getFuncao(), freelancer.getSenioridade(), freelancer.getValorHora(),
+                nota);
+    }
 }

@@ -1,4 +1,4 @@
-package com.devhub.api;
+package com.devhub.api.file;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;

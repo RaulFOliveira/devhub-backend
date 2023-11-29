@@ -87,22 +87,29 @@ public class FreelancerService {
     }
 
     public List<ListaFreelancerDTO> getFreelancers() {
-        var freelancers = repository.findAll();
-        List<ListaFreelancerDTO> dtos = freelancers.stream()
-                        .map(f -> new ListaFreelancerDTO(
-                            f.getId(), f.getNome(), f.getImagem(), f.getFuncao(),
-                            f.getSenioridade(), f.getValorHora(),
-                            avaliacaoRepo.somarTodasAsNotas(f)
-                        )).toList();
+        List<Freelancer> freelancers = repository.findAllByAtivoTrue();
+        List<ListaFreelancerDTO> dtos = freelancers.stream().map(f ->
+                     new ListaFreelancerDTO(
+                                f.getId(), f.getNome(), f.getImagem(), f.getFuncao(),
+                                f.getSenioridade(), f.getValorHora(),
+                                avaliacaoRepo.calcularMediaNotas(f)
+                )).toList();
         return dtos;
     }
 
-    public Freelancer getFreelancerById(Long id) {
-        var freelancer = repository.getReferenceById(id);
-        if (freelancer == null) {
-            throw new EntityNotFoundException();
+    public PerfilFreelancerDTO getFreelancerById(Long id) {
+        var freelancerOpt = repository.findById(id);
+        if (freelancerOpt.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-        return freelancer;
+        var freelancer = freelancerOpt.get();
+        PerfilFreelancerDTO dto = new PerfilFreelancerDTO(
+                freelancer.getId(), freelancer.getNome(), freelancer.getFuncao(),
+                freelancer.getEspecialidades(), freelancer.getValorHora(),
+                freelancer.getSenioridade(), freelancer.getDescricao(),
+                freelancer.getImagem(), avaliacaoRepo.calcularMediaNotas(freelancer)
+        );
+        return dto;
     }
 
     @Transactional
@@ -125,15 +132,14 @@ public class FreelancerService {
     }
 
     public List<Especialidade> cadastrarEspecialidades(List<String> lista, Long id) {
-        var freelancer = repository.getReferenceById(id);
-        if (freelancer == null) {
-            throw new EntityNotFoundException();
+        var freelancer = repository.findById(id);
+        if (freelancer.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-
 
         List<Especialidade> especialidades = new ArrayList<>();
         for (String especialidade : lista) {
-            especialidades.add(new Especialidade(especialidade, freelancer));
+            especialidades.add(new Especialidade(especialidade, freelancer.get()));
         }
         especialidadeRepository.saveAll(especialidades);
         return especialidades;

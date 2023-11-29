@@ -75,7 +75,7 @@ public class FreelancerController {
     @GetMapping(value = "/{id}")
     public ResponseEntity<PerfilFreelancerDTO> listarFreelancerById(@PathVariable Long id) {
         var freelancer = service.getFreelancerById(id);
-        return ResponseEntity.ok(new PerfilFreelancerDTO(freelancer));
+        return ResponseEntity.ok(freelancer);
     }
 
     @Operation(summary = "Realiza a atualização de um dos freelancers", method = "PUT")

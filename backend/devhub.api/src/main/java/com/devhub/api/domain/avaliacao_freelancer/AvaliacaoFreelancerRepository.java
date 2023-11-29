@@ -10,6 +10,6 @@ public interface AvaliacaoFreelancerRepository extends JpaRepository<AvaliacaoFr
     select avg(a.nota) from AvaliacaoFreelancer a
     where a.fkAvaliado = ?1
     """)
-    Double somarTodasAsNotas(Freelancer freelancer);
+    Double calcularMediaNotas(Freelancer freelancer);
 
 }
