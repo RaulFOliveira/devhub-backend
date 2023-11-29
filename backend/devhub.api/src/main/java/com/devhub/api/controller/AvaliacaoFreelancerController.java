@@ -9,19 +9,19 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
-@RequestMapping("/avaliacoes")
+@RequestMapping("/avaliacoes-freelancer")
 public class AvaliacaoFreelancerController {
 
     @Autowired
     private AvaliacaoFreelancerService service;
 
     @PostMapping("/{idContratante}/{idFreelancer}")
-    public ResponseEntity avaliarUsuario(@PathVariable Long idContratante,
+    public ResponseEntity avaliarFreelancer(@PathVariable Long idContratante,
                                          @PathVariable Long idFreelancer,
                                          @RequestBody @Valid CreateAvaliacaoDTO data,
                                          UriComponentsBuilder uriBuilder) {
-        var avaliacao = service.avaliarUsuario(idContratante, idFreelancer, data);
-        var uri = uriBuilder.path("/freelancers/{id}").buildAndExpand(avaliacao.getId()).toUri();
+        var avaliacao = service.avaliarFreelancer(idContratante, idFreelancer, data);
+        var uri = uriBuilder.path("/avaliacoes-freelancer/{id}").buildAndExpand(avaliacao.getId()).toUri();
         return ResponseEntity.created(uri).body(avaliacao);
     }
 

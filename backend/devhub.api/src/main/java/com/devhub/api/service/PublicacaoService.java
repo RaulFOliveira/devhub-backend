@@ -1,7 +1,11 @@
 package com.devhub.api.service;
 
-import com.devhub.api.FilaObj;
-import com.devhub.api.ListaObj;
+import com.devhub.api.domain.contratante.Contratante;
+import com.devhub.api.domain.freelancer.Freelancer;
+import com.devhub.api.domain.funcao.Funcao;
+import com.devhub.api.domain.servico.CreateServicoDTO;
+import com.devhub.api.domain.servico.Servico;
+import com.devhub.api.file.FilaObj;
 import com.devhub.api.domain.contratante.ContratanteRepository;
 import com.devhub.api.domain.especialidade_desejada.EspecialidadeDesejada;
 import com.devhub.api.domain.especialidade_desejada.EspecialidadeDesejadaDTO;
@@ -9,15 +13,23 @@ import com.devhub.api.domain.especialidade_desejada.EspecialidadeDesejadaReposit
 import com.devhub.api.domain.publicacao.dto.CreatePublicacaoDTO;
 import com.devhub.api.domain.publicacao.Publicacao;
 import com.devhub.api.domain.publicacao.PublicacaoRepository;
-import jakarta.persistence.EntityNotFoundException;
+import com.devhub.api.file.PilhaObj;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class PublicacaoService {
@@ -26,6 +38,7 @@ public class PublicacaoService {
     private ContratanteRepository contratanteRepository;
     private EspecialidadeDesejadaRepository especialidadeDesejadaRepository;
     private FilaObj<Publicacao> fila;
+    private PilhaObj<String> pilha = new PilhaObj<>(15);
     public PublicacaoService(PublicacaoRepository repository, ContratanteRepository contratanteRepository, EspecialidadeDesejadaRepository especialidadeDesejadaRepository) {
         this.repository = repository;
         this.contratanteRepository = contratanteRepository;
@@ -57,21 +70,6 @@ public class PublicacaoService {
 
     public List<Publicacao> mostrarPublicacoes() {
         var publicacoes = repository.findAllByOrderByCreatedAtDesc();
-
-//        for (Publicacao publicacao: publicacoes) {
-//            listaPublicacao.adiciona(publicacao);
-//        }
-//
-//        for (int i = 0; i < listaPublicacao.getTamanho() - 1; i++) {
-//            for (int j = 1; j < listaPublicacao.getTamanho()  - i; j++) {
-//                if (listaPublicacao.getElemento(j).getCreatedAt().isBefore(listaPublicacao.getElemento(j-1).getCreatedAt())) {
-//                    Publicacao aux = listaPublicacao.getElemento(j);
-//                    listaPublicacao.substitui(j, listaPublicacao.getElemento(j-1));
-//                    listaPublicacao.substitui(j-1, aux);
-//                }
-//            }
-//        }
-
         return publicacoes;
     }
     public List<Publicacao> mostrarPublicacoesByid(Long id) {
@@ -83,21 +81,6 @@ public class PublicacaoService {
         }
 
         var publicacoes = repository.findByContratante(contratante.get());
-
-//        for (Publicacao publicacao: publicacoes) {
-//            listaPublicacao.adiciona(publicacao);
-//        }
-//
-//        for (int i = 0; i < listaPublicacao.getTamanho() - 1; i++) {
-//            for (int j = 1; j < listaPublicacao.getTamanho()  - i; j++) {
-//                if (listaPublicacao.getElemento(j).getCreatedAt().isBefore(listaPublicacao.getElemento(j-1).getCreatedAt())) {
-//                    Publicacao aux = listaPublicacao.getElemento(j);
-//                    listaPublicacao.substitui(j, listaPublicacao.getElemento(j-1));
-//                    listaPublicacao.substitui(j-1, aux);
-//                }
-//            }
-//        }
-
         return publicacoes;
     }
 
@@ -147,5 +130,43 @@ public class PublicacaoService {
         }
         repository.saveAll(publicacoesASeremPostadas);
         return publicacoesASeremPostadas;
+    }
+
+    public void publicarEmLote(MultipartFile arquivoTxt, Long id) throws IOException {
+        InputStream inputStream = arquivoTxt.getInputStream();
+        Stream<String> txt = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))
+                .lines();
+
+        var contratante = contratanteRepository.findById(id);
+        for (String linha  : txt.toList()) {
+            if (linha.substring(0, 2).equals("00")) {
+                System.out.println("É um linha de header");
+            } else if (linha.substring(0, 2).equals("01")) {
+                System.out.println("É um linha de trailer");
+            } else if (linha.substring(0, 2).equals("02")) {
+                System.out.println("É um linha de corpo");
+
+                String titulo = linha.substring(2, 49).trim();
+                String descricao = linha.substring(49, 149).trim();
+                var especialidadesString = linha.substring(149, 249);
+                var especialidades = especialidadesString.split(";");
+
+                List<EspecialidadeDesejadaDTO> dtos = new ArrayList<>();
+                for (String especialidade : especialidades) {
+                    dtos.add(new EspecialidadeDesejadaDTO(especialidade));
+                }
+                Publicacao p = new Publicacao(new CreatePublicacaoDTO(titulo, descricao, dtos), contratante.get());
+                repository.save(p);
+                for (EspecialidadeDesejadaDTO dto : dtos) {
+                    EspecialidadeDesejada especialidadeDesejada =
+                            new EspecialidadeDesejada(dto, p);
+                    especialidadeDesejadaRepository.save(especialidadeDesejada);
+                }
+            } else {
+                System.out.println("Registro inválido");
+            }
+        }
+
+        pilha.push(arquivoTxt.getName());
     }
 }

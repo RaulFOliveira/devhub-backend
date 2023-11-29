@@ -13,7 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.List;
 
 public interface FreelancerRepository extends JpaRepository<Freelancer, Long> {
-//    Page<Freelancer> findAllByAtivoTrue(Pageable paginacao);
+    List<Freelancer> findAllByAtivoTrue();
     List<Freelancer> findAll();
 
     UserDetails findByEmail(String email);

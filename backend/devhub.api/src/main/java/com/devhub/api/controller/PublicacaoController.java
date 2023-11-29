@@ -1,21 +1,31 @@
 package com.devhub.api.controller;
 
-import com.devhub.api.FilaObj;
-import com.devhub.api.ListaObj;
+import com.devhub.api.domain.contratante.Contratante;
+import com.devhub.api.domain.freelancer.Freelancer;
+import com.devhub.api.domain.funcao.Funcao;
 import com.devhub.api.domain.publicacao.dto.CreatePublicacaoAgendadaDTO;
 import com.devhub.api.domain.publicacao.dto.CreatePublicacaoDTO;
 import com.devhub.api.domain.publicacao.dto.DetailPublicacaoDTO;
 import com.devhub.api.domain.publicacao.Publicacao;
+import com.devhub.api.domain.servico.CreateServicoDTO;
+import com.devhub.api.domain.servico.Servico;
 import com.devhub.api.service.PublicacaoService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/publicacoes")
@@ -45,6 +55,13 @@ public class PublicacaoController {
         var publicacoesAgendadas = service.realizarPublicacoesAgendadas(data.qtdPublicacoes());
         return ResponseEntity.status(201).body(publicacoesAgendadas);
     }
+
+    @PostMapping("/txt/{id}")
+    public ResponseEntity publicarEmLote(@RequestParam("file") MultipartFile arquivoTxt, @PathVariable Long id) throws IOException {
+        service.publicarEmLote(arquivoTxt, id);
+        return ResponseEntity.status(201).build();
+    }
+
     @GetMapping
     public ResponseEntity<List<Publicacao>> mostrarPublicacoes() {
         var publicacoes = service.mostrarPublicacoes();

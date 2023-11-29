@@ -20,7 +20,7 @@ public class AvaliacaoFreelancerService {
     @Autowired
     private ContratanteRepository contratanteRepo;
 
-    public AvaliacaoFreelancer avaliarUsuario(Long idContratante, Long idFreelancer, CreateAvaliacaoDTO data) {
+    public AvaliacaoFreelancer avaliarFreelancer(Long idContratante, Long idFreelancer, CreateAvaliacaoDTO data) {
         var contratante = contratanteRepo.findById(idContratante);
         var freelancer = freelancerRepo.findById(idFreelancer);
 

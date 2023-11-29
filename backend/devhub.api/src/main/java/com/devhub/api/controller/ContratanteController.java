@@ -25,14 +25,13 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/contratantes", produces = {"application/json"})
 @Tag(name = "Api DevHub")
 public class ContratanteController {
 
-    @Autowired
-    private ContratanteRepository repository;
     @Autowired
     private ContratanteService service;
 
@@ -58,15 +57,15 @@ public class ContratanteController {
             @ApiResponse(responseCode = "500", description = "Erro ao realizar a listagem dos contratantes"),
     })
     @GetMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Page<ListContratanteDTO>> listar(@PageableDefault(size = 5, sort = {"nome"}) Pageable paginacao) {
-        var page = service.getContratantes(paginacao);
+    public ResponseEntity<List<ListContratanteDTO>> listar() {
+        var page = service.getContratantes();
         return ResponseEntity.ok(page);
     }
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<ListContratanteDTO> listarFreelancerById(@PathVariable Long id) {
-        var contratante = service.getContratanteById(id);
-        return ResponseEntity.ok(new ListContratanteDTO(contratante));
+        ListContratanteDTO contratante = service.getContratanteById(id);
+        return ResponseEntity.ok(contratante);
     }
 
     @Operation(summary = "Realiza a atualizaçao de um dos Contratantes", method = "PUT")
@@ -95,20 +94,20 @@ public class ContratanteController {
         return ResponseEntity.noContent().build();
     }
 
-    @Transactional
-    @Operation(summary = "Realiza a ativaçao de uma conta de Contratante", method = "PATCH")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Conta ativada com sucesso"),
-            @ApiResponse(responseCode = "422", description = "Dados de requisição inválida"),
-            @ApiResponse(responseCode = "400", description = "Parametros inválidos"),
-            @ApiResponse(responseCode = "500", description = "Erro ao realizar a ativação da conta"),
-    })
-    @PatchMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity ativarConta(@PathVariable Long id) {
-        var contratante = repository.getReferenceById(id);
-        contratante.ativarConta();
-        return ResponseEntity.noContent().build();
-    }
+//    @Transactional
+//    @Operation(summary = "Realiza a ativaçao de uma conta de Contratante", method = "PATCH")
+//    @ApiResponses(value = {
+//            @ApiResponse(responseCode = "200", description = "Conta ativada com sucesso"),
+//            @ApiResponse(responseCode = "422", description = "Dados de requisição inválida"),
+//            @ApiResponse(responseCode = "400", description = "Parametros inválidos"),
+//            @ApiResponse(responseCode = "500", description = "Erro ao realizar a ativação da conta"),
+//    })
+//    @PatchMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+//    public ResponseEntity ativarConta(@PathVariable Long id) {
+//        var contratante = repository.getReferenceById(id);
+//        contratante.ativarConta();
+//        return ResponseEntity.noContent().build();
+//    }
 
     @PatchMapping(value = "/foto/{codigo}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> patchFoto(@PathVariable int codigo,

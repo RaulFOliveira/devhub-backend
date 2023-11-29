@@ -12,7 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.List;
 
 public interface ContratanteRepository extends JpaRepository<Contratante, Long> {
-    Page<Contratante> findAllByAtivoTrue(Pageable paginacao);
+    List<Contratante> findAllByAtivoTrue();
     UserDetails findByEmail(String email);
 
     Contratante findByCnpj(String cnpj);

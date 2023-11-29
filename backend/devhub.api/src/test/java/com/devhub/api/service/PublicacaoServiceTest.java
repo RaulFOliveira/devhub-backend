@@ -1,6 +1,6 @@
 package com.devhub.api.service;
 
-import com.devhub.api.FilaObj;
+import com.devhub.api.file.FilaObj;
 import com.devhub.api.domain.contratante.Contratante;
 import com.devhub.api.domain.contratante.ContratanteRepository;
 import com.devhub.api.domain.contratante.dto.CreateContratanteDTO;
@@ -10,15 +10,12 @@ import com.devhub.api.domain.especialidade_desejada.EspecialidadeDesejadaReposit
 import com.devhub.api.domain.publicacao.Publicacao;
 import com.devhub.api.domain.publicacao.PublicacaoRepository;
 import com.devhub.api.domain.publicacao.dto.CreatePublicacaoDTO;
-import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.server.ResponseStatusException;
