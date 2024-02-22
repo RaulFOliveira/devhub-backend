@@ -3,7 +3,7 @@ package com.devhub.api.service;
 import com.devhub.api.domain.contratante.Contratante;
 import com.devhub.api.domain.freelancer.Freelancer;
 import com.devhub.api.domain.funcao.Funcao;
-import com.devhub.api.domain.servico.CreateServicoDTO;
+//import com.devhub.api.domain.servico.CreateServicoDTO;
 import com.devhub.api.domain.servico.Servico;
 import com.devhub.api.file.FilaObj;
 import com.devhub.api.domain.contratante.ContratanteRepository;
