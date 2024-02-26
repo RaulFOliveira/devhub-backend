@@ -17,9 +17,6 @@ import java.util.List;
 public class Contratante extends Usuario {
 
     private String cnpj;
-    @OneToMany(mappedBy = "contratante")
-    private List<Publicacao> publicacoes;
-
     public Contratante() { super(); }
 
     public Contratante(CreateContratanteDTO data) {

@@ -40,8 +40,9 @@ public class SecurityConfiguration {
                     //ENCERRAMENTO DE SERVICO
                     req.requestMatchers(HttpMethod.POST, "/servicos").hasRole("CONTRATANTE");
                     //PUBLICACOES
-                    req.requestMatchers(HttpMethod.POST, "/publicacoes").hasRole("CONTRATANTE");
-                    req.requestMatchers(HttpMethod.DELETE, "/publicacoes").hasRole("CONTRATANTE");
+                    req.requestMatchers(HttpMethod.POST, "/publicacoes/*").permitAll();
+                    req.requestMatchers(HttpMethod.DELETE, "/publicacoes/*").permitAll();
+                    req.requestMatchers(HttpMethod.GET, "/publicacoes").permitAll();
                     //SWAGGER
                     req.requestMatchers(HttpMethod.GET, "/swagger-ui/**").permitAll();
                     req.requestMatchers("/v3/api-docs/**").permitAll();
