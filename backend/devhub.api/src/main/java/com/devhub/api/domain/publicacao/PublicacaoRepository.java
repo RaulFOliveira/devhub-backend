@@ -11,11 +11,11 @@ public interface PublicacaoRepository extends JpaRepository<Publicacao, Long> {
 
     @Query("""
 SELECT new com.devhub.api.domain.publicacao.dto.ListaPublicacaoDTO(
-    c.id,
+    p.id,
     c.nome,
     c.imagem,
     p.descricao,
-    p.titulo,
+    p.id_usuario,
     p.createdAt,
     p.role
 )
@@ -28,11 +28,11 @@ ORDER BY p.createdAt DESC
 
     @Query("""
 SELECT new com.devhub.api.domain.publicacao.dto.ListaPublicacaoDTO(
-    f.id,
+    p.id,
     f.nome,
     f.imagem,
     p.descricao,
-    p.titulo,
+    p.id_usuario,
     p.createdAt,
     p.role
 )
@@ -43,5 +43,31 @@ ORDER BY p.createdAt DESC
 """)
     List<ListaPublicacaoDTO> findByFreelancer(Long id);
     List<Publicacao> findAllByOrderByCreatedAtDesc();
+
+    @Query("""
+SELECT new com.devhub.api.domain.publicacao.dto.ListaPublicacaoDTO(
+    p.id,
+    CASE 
+        WHEN p.role = 'CONTRATANTE' THEN c.nome
+        WHEN p.role = 'FREELANCER' THEN f.nome
+        ELSE NULL 
+    END,
+    CASE 
+        WHEN p.role = 'CONTRATANTE' THEN c.imagem
+        WHEN p.role = 'FREELANCER' THEN f.imagem
+        ELSE NULL 
+    END,
+    p.descricao,
+    p.id_usuario,
+    p.createdAt,
+    p.role
+)
+FROM Publicacao p 
+LEFT JOIN Contratante c ON p.id_usuario = c.id AND p.role = 'CONTRATANTE'
+LEFT JOIN Freelancer f ON p.id_usuario = f.id AND p.role = 'FREELANCER'
+WHERE p.role IN ('CONTRATANTE', 'FREELANCER')
+ORDER BY p.createdAt DESC
+""")
+    List<ListaPublicacaoDTO> findAllPublicacoes();
 
 }

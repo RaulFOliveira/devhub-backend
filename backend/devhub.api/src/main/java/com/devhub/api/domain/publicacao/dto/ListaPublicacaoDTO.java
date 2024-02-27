@@ -14,13 +14,13 @@ public record ListaPublicacaoDTO(
     String nome,
     byte[] imagem,
     String descricao,
-    String titulo,
+    Long id_usuario,
     LocalDateTime getCreatedAt,
     String role
 
 ){
     public ListaPublicacaoDTO(Usuario usuario, Publicacao publicacao) {
-            this(usuario.getId(), usuario.getNome(), usuario.getImagem(),
-                    publicacao.getDescricao(),publicacao.getTitulo(), publicacao.getCreatedAt(), publicacao.getRole());
+            this(publicacao.getId(), usuario.getNome(), usuario.getImagem(),
+                    publicacao.getDescricao(), publicacao.getId_usuario(), publicacao.getCreatedAt(), publicacao.getRole());
         }
 }

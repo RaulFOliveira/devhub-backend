@@ -13,9 +13,6 @@ import com.devhub.api.domain.usuario.UserRole;
 import com.devhub.api.domain.usuario.Usuario;
 import com.devhub.api.file.FilaObj;
 import com.devhub.api.domain.contratante.ContratanteRepository;
-import com.devhub.api.domain.especialidade_desejada.EspecialidadeDesejada;
-import com.devhub.api.domain.especialidade_desejada.EspecialidadeDesejadaDTO;
-import com.devhub.api.domain.especialidade_desejada.EspecialidadeDesejadaRepository;
 import com.devhub.api.domain.publicacao.dto.CreatePublicacaoDTO;
 import com.devhub.api.domain.publicacao.Publicacao;
 import com.devhub.api.domain.publicacao.PublicacaoRepository;
@@ -79,20 +76,23 @@ public class PublicacaoService {
     }
 
     public List<ListaPublicacaoDTO> mostrarPublicacoes() {
-        var publicacoes = repository.findAllByOrderByCreatedAtDesc();
-        List<ListaPublicacaoDTO> todasAsPublis = new ArrayList<>();
-        for (int i = 0; i < publicacoes.size(); i++){
-            Long idUsuario = publicacoes.get(i).getId_usuario();
-            ListaPublicacaoDTO consultaDaVez;
-            if (publicacoes.get(i).getRole().equals("CONTRATANTE")){
-                consultaDaVez = repository.findByContratante(idUsuario).get(0); // Pega o primeiro elemento da lista
-            }else{
-                consultaDaVez = repository.findByFreelancer(idUsuario).get(0); // Pega o primeiro elemento da lista
-            }
-            todasAsPublis.add(consultaDaVez);
-        }
-        System.out.println(todasAsPublis);
-        return todasAsPublis;
+//        var publicacoes = repository.findAllByOrderByCreatedAtDesc();
+//        List<ListaPublicacaoDTO> todasAsPublis = new ArrayList<>();
+//        for (int i = 0; i < publicacoes.size(); i++){
+//            Long idUsuario = publicacoes.get(i).getId_usuario();
+//            ListaPublicacaoDTO consultaDaVez;
+//            if (publicacoes.get(i).getRole().equals("CONTRATANTE")){
+//                consultaDaVez = repository.findByContratante(idUsuario).get(0); // Pega o primeiro elemento da lista
+//            }else{
+//                consultaDaVez = repository.findByFreelancer(idUsuario).get(0); // Pega o primeiro elemento da lista
+//            }
+//            todasAsPublis.add(consultaDaVez);
+//        }
+//        System.out.println(todasAsPublis);
+//        return todasAsPublis;
+
+            return repository.findAllPublicacoes();
+
     }
 
     public List<Publicacao> mostrarPublicacoesByid(Long id) {

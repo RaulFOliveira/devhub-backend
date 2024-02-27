@@ -1,7 +1,6 @@
 package com.devhub.api.domain.publicacao;
 
 import com.devhub.api.domain.contratante.Contratante;
-import com.devhub.api.domain.especialidade_desejada.EspecialidadeDesejada;
 import com.devhub.api.domain.publicacao.dto.CreatePublicacaoDTO;
 import com.devhub.api.domain.usuario.UserRole;
 import com.devhub.api.domain.usuario.Usuario;
@@ -27,13 +26,11 @@ public class Publicacao {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String titulo;
     private String descricao;
     private String role;
     private LocalDateTime createdAt;
     private Long id_usuario;
     public Publicacao(CreatePublicacaoDTO data) {
-        this.titulo = data.titulo();
         this.descricao = data.descricao();
         this.role = data.role();
         this.id_usuario = data.id_usuario();
