@@ -92,7 +92,7 @@ public class FreelancerService {
         List<Freelancer> freelancers = repository.findAllByAtivoTrue();
         List<ListaFreelancerDTO> dtos = freelancers.stream().map(f ->
                      new ListaFreelancerDTO(
-                                f.getId(), f.getNome(), f.getImagem(), f.getFuncao(),
+                                f.getId(), f.getNome(), f.getImagem(), f.getFuncao(), f.getEspecialidades(),
                                 f.getSenioridade(), f.getValorHora(),
                                 avaliacaoRepo.calcularMediaNotas(f)
                 )).toList();
@@ -108,7 +108,7 @@ public class FreelancerService {
         PerfilFreelancerDTO dto = new PerfilFreelancerDTO(
                 freelancer.getId(), freelancer.getNome(), freelancer.getFuncao(),
                 freelancer.getEspecialidades(), freelancer.getValorHora(),
-                freelancer.getSenioridade(), freelancer.getDescricao(),
+                freelancer.getSenioridade(), freelancer.getDescricao(), freelancer.getTelefone(),
                 freelancer.getImagem(), avaliacaoRepo.calcularMediaNotas(freelancer)
         );
         return dto;

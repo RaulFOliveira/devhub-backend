@@ -8,7 +8,7 @@ import java.util.List;
 
 public record PerfilFreelancerDTO(Long id, String nome, Funcao funcao,
                                   List<Especialidade> especialidades, Double valorHora,
-                                  String senioridade, String descricao,
+                                  String senioridade, String descricao, String telefone,
                                   byte[] imagem, Double nota) {
 
 }
