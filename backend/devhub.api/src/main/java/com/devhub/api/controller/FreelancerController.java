@@ -1,5 +1,6 @@
 package com.devhub.api.controller;
 
+import com.devhub.api.domain.especialidade.EspecialidadeDTO;
 import com.devhub.api.domain.freelancer.*;
 import com.devhub.api.domain.freelancer.dto.*;
 import com.devhub.api.service.FreelancerService;
@@ -124,5 +125,23 @@ public class FreelancerController {
     public ResponseEntity<Void> patchFoto(@PathVariable int codigo,
                                           @RequestPart("image") MultipartFile novaFoto) throws IOException {
         return ResponseEntity.status(service.atualizarFoto(novaFoto, codigo)).build();
+    }
+
+    @GetMapping(value = "/benchmarking-one", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<PerfilFreelancerDTO>> getFreelancerBySearch(@RequestParam String filter) {
+        var freelancers = service.getFreelancersBySearch(filter);
+        return freelancers.isEmpty() ?
+            ResponseEntity.status(204).build() :
+            ResponseEntity.status(200).body(freelancers);
+    }
+
+    @GetMapping(value = "/benchmarking-two", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<PerfilFreelancerDTO>> compareFreelancers(
+            @RequestBody List<EspecialidadeDTO> filters,
+            @RequestParam Long compareTo) {
+        var freelancers = service.compareFreelancers(filters, compareTo);
+        return freelancers.isEmpty() ?
+                ResponseEntity.status(204).build() :
+                ResponseEntity.status(200).body(freelancers);
     }
 }

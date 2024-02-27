@@ -19,8 +19,10 @@ public class Servico {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Integer horasTrabalhadas;
+    private String estado;
+    private Double valorPagamento;
     private LocalDate createdAt;
+    private LocalDate finishedAt;
 
     @ManyToOne
     @JoinColumn(name = "fk_freelancer")
@@ -30,11 +32,15 @@ public class Servico {
     @JoinColumn(name = "fk_contratante")
     private Contratante contratante;
 
-    public Servico(CreateServicoDTO data, Contratante contratante, Freelancer freelancer) {
-        this.horasTrabalhadas = data.horasTrabalhadas();
+    public Servico(Contratante contratante, Freelancer freelancer) {
+        this.valorPagamento = null;
+        this.estado = "Em andamento";
+        this.finishedAt = null;
+
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         String dataString = LocalDate.now().format(dateTimeFormatter);
         this.createdAt = LocalDate.parse(dataString, dateTimeFormatter);
+
         this.freelancer = freelancer;
         this.contratante = contratante;
     }

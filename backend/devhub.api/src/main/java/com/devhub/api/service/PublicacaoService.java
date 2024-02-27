@@ -5,6 +5,7 @@ import com.devhub.api.domain.freelancer.Freelancer;
 import com.devhub.api.domain.freelancer.FreelancerRepository;
 import com.devhub.api.domain.freelancer.dto.ListaFreelancerDTO;
 import com.devhub.api.domain.funcao.Funcao;
+//import com.devhub.api.domain.servico.CreateServicoDTO;
 import com.devhub.api.domain.publicacao.dto.DetailPublicacaoDTO;
 import com.devhub.api.domain.publicacao.dto.ListaPublicacaoDTO;
 import com.devhub.api.domain.servico.CreateServicoDTO;

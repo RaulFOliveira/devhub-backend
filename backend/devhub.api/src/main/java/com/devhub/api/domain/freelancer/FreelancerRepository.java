@@ -2,6 +2,7 @@ package com.devhub.api.domain.freelancer;
 
 import com.devhub.api.domain.freelancer.dto.FreelancerValidacaoDTO;
 import com.devhub.api.domain.freelancer.dto.ListaFreelancerDTO;
+import com.devhub.api.domain.freelancer.dto.PerfilFreelancerDTO;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,8 +31,35 @@ public interface FreelancerRepository extends JpaRepository<Freelancer, Long> {
     @Transactional
     @Query("""
         update Freelancer f set f.imagem = ?1
-        where f.id = ?2     
+        where f.id = ?2
             """)
     int atualizarFoto(byte[] foto, int idFreelancer);
 
+    @Query("""
+    select
+        f
+    from
+        Especialidade e
+    join
+        e.freelancer f
+    where
+        LOWER(f.funcao) like LOWER(CONCAT(:pesquisa, '%'))
+    or
+        LOWER(e.descricao) like LOWER(CONCAT(:pesquisa, '%'))
+    """)
+    List<Freelancer> getFreelancersBySearch(String pesquisa);
+
+    @Query("""
+    select
+        f
+    from
+        Especialidade e
+    join
+        e.freelancer f
+    where
+        LOWER(e.descricao) in :especialidades
+    and
+        f.id <> :compareTo
+    """)
+    List<Freelancer> compareFreelancerBySpecialties(List<String> especialidades, Long compareTo);
 }

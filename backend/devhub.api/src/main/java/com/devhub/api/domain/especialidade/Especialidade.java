@@ -15,12 +15,11 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(of = "id_especialidade")
 public class Especialidade {
     @JsonIgnore
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_especialidade;
+    private Long id;
 
     private String descricao;
 

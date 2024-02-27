@@ -4,6 +4,7 @@ import com.devhub.api.domain.avaliacao_freelancer.AvaliacaoFreelancerRepository;
 import com.devhub.api.domain.contratante.ContratanteRepository;
 import com.devhub.api.domain.contratante.dto.ContratanteValidacaoDTO;
 import com.devhub.api.domain.especialidade.Especialidade;
+import com.devhub.api.domain.especialidade.EspecialidadeDTO;
 import com.devhub.api.domain.especialidade.EspecialidadeRepository;
 import com.devhub.api.domain.freelancer.*;
 import com.devhub.api.domain.freelancer.dto.*;
@@ -22,6 +23,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class FreelancerService {
@@ -152,5 +154,32 @@ public class FreelancerService {
         int status = atualizados == 1 ? 200 : 404;
 
         return status;
+    }
+
+    public List<PerfilFreelancerDTO> getFreelancersBySearch(String pesquisa) {
+         List<Freelancer> freelancers = repository.getFreelancersBySearch(pesquisa);
+         List<PerfilFreelancerDTO> dtos = freelancers.stream()
+                 .map(f -> new PerfilFreelancerDTO(
+                         f.getId(), f.getNome(), f.getFuncao(),
+                         f.getEspecialidades(), f.getValorHora(),
+                         f.getSenioridade(), f.getDescricao(),
+                         f.getImagem(), avaliacaoRepo.calcularMediaNotas(f)
+                 )).toList();
+         return dtos;
+    }
+
+    public List<PerfilFreelancerDTO> compareFreelancers(List<EspecialidadeDTO> filters, Long compareTo) {
+        List<String> especialidades = filters.stream()
+                .map(EspecialidadeDTO::descricao)
+                .toList();
+        var freelancers = repository.compareFreelancerBySpecialties(especialidades, compareTo);
+        List<PerfilFreelancerDTO> dtos = freelancers.stream()
+                .map(f -> new PerfilFreelancerDTO(
+                        f.getId(), f.getNome(), f.getFuncao(),
+                        f.getEspecialidades(), f.getValorHora(),
+                        f.getSenioridade(), f.getDescricao(),
+                        f.getImagem(), avaliacaoRepo.calcularMediaNotas(f)
+                )).toList();
+        return dtos;
     }
 }

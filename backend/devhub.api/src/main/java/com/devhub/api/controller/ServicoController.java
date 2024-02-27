@@ -5,10 +5,11 @@ import com.devhub.api.domain.contratante.ContratanteRepository;
 import com.devhub.api.domain.freelancer.Freelancer;
 import com.devhub.api.domain.freelancer.FreelancerRepository;
 import com.devhub.api.domain.funcao.Funcao;
-import com.devhub.api.domain.servico.CreateServicoDTO;
+//import com.devhub.api.domain.servico.CreateServicoDTO;
 import com.devhub.api.domain.servico.DetailServicoDTO;
 import com.devhub.api.domain.servico.Servico;
 import com.devhub.api.domain.servico.ServicoRepository;
+import com.devhub.api.service.ServicoService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,102 +33,89 @@ import java.util.stream.Stream;
 public class ServicoController {
 
     @Autowired
-    private ServicoRepository servicoRepository;
+    private ServicoService service;
 
-    @Autowired
-    private FreelancerRepository freelancerRepository;
-
-    @Autowired
-    private ContratanteRepository contratanteRepository;
-
-    static List<Servico> listaLida = new ArrayList<>();
-
-    @PostMapping
+    @PostMapping("/criar")
     @Transactional
-    public ResponseEntity criarPublicacao(@RequestBody @Valid CreateServicoDTO data,
-                                            @RequestParam Long idContratante,
-                                            @RequestParam Long idFreelancer,
-                                            UriComponentsBuilder uriBuilder) {
-
-       Freelancer freelancer = freelancerRepository.findById(idFreelancer)
-               .orElseThrow(() -> new IllegalStateException("Freelancer não identificado"));
-       Contratante contratante = contratanteRepository.findById(idContratante)
-               .orElseThrow(() -> new IllegalStateException("Contratante não identificado"));
-
-        var servico = new Servico(data, contratante, freelancer);
-
-        servicoRepository.save(servico);
-
+    public ResponseEntity criarServico(@RequestParam Long idContratante,
+                                          @RequestParam Long idFreelancer,
+                                          UriComponentsBuilder uriBuilder) {
+        var servico = service.criarServico(idFreelancer, idContratante);
         var uri = uriBuilder.path("/servicos/{id}").buildAndExpand(servico.getId()).toUri();
         return ResponseEntity.created(uri).body(new DetailServicoDTO(servico));
     }
 
-    @GetMapping
-    public ResponseEntity<List<Servico>> mostrarServicos(){
-        List<Servico> servicos = servicoRepository.findAll();
-
-        if (servicos.isEmpty()) {
-            return ResponseEntity.status(204).build();
-        }
-
-        return ResponseEntity.status(200).body(servicos);
+    @PatchMapping("/concluir")
+    public ResponseEntity concluirServico(@RequestParam Long idContratante,
+                                          @RequestParam Long idFreelancer,
+                                          @RequestBody Double valorPagamento) {
+        service.concluirServico(idContratante, idFreelancer, valorPagamento);
+        return ResponseEntity.status(204).build();
     }
 
-    @PostMapping("/txt")
-    public ResponseEntity criarServicoPorTxt(@RequestParam("file")MultipartFile arquivoTXT) throws IOException {
-        InputStream inputStream = arquivoTXT.getInputStream();
-        Stream<String> txt = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))
-                .lines();
-        
-        int cont = 0;
-        int contServico = 0;
-        int horasTrabalhadas = 0;
-        Freelancer freelancer = null;
-        Contratante contratante = null;
-        for (String linha  : txt.collect(Collectors.toList())) {
-            if (linha.substring(0,2).equals("00")) {
-                System.out.println("É um linha de header");
-            } else if (linha.substring(0,2).equals("01")) {
-                System.out.println("É um linha de trailer");
-            } else if (linha.substring(0,2).equals("02")) {
-                System.out.println("É um linha de corpo");
-
-                horasTrabalhadas = Integer.parseInt(linha.substring(2, 5).trim());
-                String cnpj = linha.substring(5,19);
-                contratante = contratanteRepository.findByCnpj(cnpj);
-                System.out.println(contratante);
-            } else if (linha.substring(0,2).equals("03")) {
-
-                String nomeFreelancer = linha.substring(2,43).trim();
-                System.out.println("nome: "+nomeFreelancer);
-                String telefone = linha.substring(43, 54);
-                System.out.println("telefone: "+telefone);
-                String email = linha.substring(54, 104).trim();
-                System.out.println("email: "+email);
-                String funcao = Funcao.valueOf(linha.substring(105, 137).trim()).getFuncao();
-                Double valorHora = Double.valueOf(linha.substring(137, 144)
-                        .trim()
-                        .replace(",", "."));
-                System.out.println("valor: "+ valorHora);
-                String senioridade = linha.substring(144, 152).trim();
-                System.out.println("senioridade: "+senioridade);
-                freelancer =
-                        freelancerRepository.findByNomeAndTelefoneAndEmailAndValorHoraAndSenioridade(nomeFreelancer, telefone, email, valorHora, senioridade);
-                System.out.println(freelancer);
-                cont+=2;
-            } else {
-                System.out.println("Registro inválido");
-            }
-
-            if (cont % 2 == 0 && cont > 0) {
-                listaLida.add(
-                        new Servico(
-                                new CreateServicoDTO(horasTrabalhadas), contratante, freelancer
-                        )
-                );
-            }
-        }
-        servicoRepository.saveAll(listaLida);
-        return ResponseEntity.ok().build();
+    @PatchMapping("/fechar")
+    public ResponseEntity fecharServico(@RequestParam Long idContratante,
+                                        @RequestParam Long idFreelancer) {
+        service.fecharServico(idContratante, idFreelancer);
+        return ResponseEntity.status(204).build();
     }
+
+//
+//    @PostMapping("/txt")
+//    public ResponseEntity criarServicoPorTxt(@RequestParam("file")MultipartFile arquivoTXT) throws IOException {
+//        InputStream inputStream = arquivoTXT.getInputStream();
+//        Stream<String> txt = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))
+//                .lines();
+//
+//        int cont = 0;
+//        int contServico = 0;
+//        int horasTrabalhadas = 0;
+//        Freelancer freelancer = null;
+//        Contratante contratante = null;
+//        for (String linha  : txt.collect(Collectors.toList())) {
+//            if (linha.substring(0,2).equals("00")) {
+//                System.out.println("É um linha de header");
+//            } else if (linha.substring(0,2).equals("01")) {
+//                System.out.println("É um linha de trailer");
+//            } else if (linha.substring(0,2).equals("02")) {
+//                System.out.println("É um linha de corpo");
+//
+//                horasTrabalhadas = Integer.parseInt(linha.substring(2, 5).trim());
+//                String cnpj = linha.substring(5,19);
+//                contratante = contratanteRepository.findByCnpj(cnpj);
+//                System.out.println(contratante);
+//            } else if (linha.substring(0,2).equals("03")) {
+//
+//                String nomeFreelancer = linha.substring(2,43).trim();
+//                System.out.println("nome: "+nomeFreelancer);
+//                String telefone = linha.substring(43, 54);
+//                System.out.println("telefone: "+telefone);
+//                String email = linha.substring(54, 104).trim();
+//                System.out.println("email: "+email);
+//                String funcao = Funcao.valueOf(linha.substring(105, 137).trim()).getFuncao();
+//                Double valorHora = Double.valueOf(linha.substring(137, 144)
+//                        .trim()
+//                        .replace(",", "."));
+//                System.out.println("valor: "+ valorHora);
+//                String senioridade = linha.substring(144, 152).trim();
+//                System.out.println("senioridade: "+senioridade);
+//                freelancer =
+//                        freelancerRepository.findByNomeAndTelefoneAndEmailAndValorHoraAndSenioridade(nomeFreelancer, telefone, email, valorHora, senioridade);
+//                System.out.println(freelancer);
+//                cont+=2;
+//            } else {
+//                System.out.println("Registro inválido");
+//            }
+//
+//            if (cont % 2 == 0 && cont > 0) {
+//                listaLida.add(
+//                        new Servico(
+//                                new CreateServicoDTO(horasTrabalhadas), contratante, freelancer
+//                        )
+//                );
+//            }
+//        }
+//        servicoRepository.saveAll(listaLida);
+//        return ResponseEntity.ok().build();
+//    }
 }
