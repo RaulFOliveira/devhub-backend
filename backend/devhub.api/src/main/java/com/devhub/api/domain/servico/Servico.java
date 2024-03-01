@@ -19,7 +19,7 @@ public class Servico {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String estado;
+    private String status;
     private Double valorPagamento;
     private LocalDate createdAt;
     private LocalDate finishedAt;
@@ -34,7 +34,7 @@ public class Servico {
 
     public Servico(Contratante contratante, Freelancer freelancer) {
         this.valorPagamento = null;
-        this.estado = "Em andamento";
+        this.status = "Em andamento";
         this.finishedAt = null;
 
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");

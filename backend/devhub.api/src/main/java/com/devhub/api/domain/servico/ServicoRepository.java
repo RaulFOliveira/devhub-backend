@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 public interface ServicoRepository extends JpaRepository<Servico, Long> {
 
     @Query("""
-    SELECT CASE WHEN COUNT(s.estado) > 0
+    SELECT CASE WHEN COUNT(s.status) > 0
     THEN
         true
     ELSE
@@ -36,7 +36,7 @@ public interface ServicoRepository extends JpaRepository<Servico, Long> {
     AND
         s.contratante = ?2
     AND
-        s.estado = "Em andamento"
+        s.status = "Em andamento"
     ORDER BY
         s.createdAt
     DESC

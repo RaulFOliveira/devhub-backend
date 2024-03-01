@@ -60,6 +60,12 @@ public class ServicoController {
         return ResponseEntity.status(204).build();
     }
 
+    @GetMapping
+    public boolean validarAndamento(@RequestParam("idContratante") Long idContratante,
+                                    @RequestParam("idFreelancer") Long idFreelancer) {
+        return service.verificarServicoEmAndamento(idContratante, idFreelancer);
+    }
+
 //
 //    @PostMapping("/txt")
 //    public ResponseEntity criarServicoPorTxt(@RequestParam("file")MultipartFile arquivoTXT) throws IOException {

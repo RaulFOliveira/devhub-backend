@@ -53,6 +53,9 @@ public class SecurityConfiguration {
                     req.requestMatchers("/especialidades/**").permitAll();
                     req.requestMatchers("/contratantes").permitAll();
                     req.requestMatchers("/freelancers").permitAll();
+                    //SERVIÇO
+                    req.requestMatchers("/servicos/**").permitAll();
+                    req.requestMatchers("/servicos").permitAll();
 
 
 

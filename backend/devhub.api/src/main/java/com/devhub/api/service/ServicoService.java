@@ -37,7 +37,7 @@ public class ServicoService {
         Contratante contratante = contratanteRepository.findById(idContratante)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Contratante não identificado"));
 
-        if (verificarServicoEmAndamento(freelancer, contratante)) {
+        if (verificarServicoEmAndamento(idContratante, idFreelancer)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT,
                     "Já existe um serviço em andamento entre esses dois usuários");
         }
@@ -52,14 +52,14 @@ public class ServicoService {
         Contratante contratante = contratanteRepository.findById(idContratante)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Contratante não identificado"));
 
-        if (!verificarServicoEmAndamento(freelancer, contratante)) {
+        if (!verificarServicoEmAndamento(idContratante, idFreelancer)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,
                     "Não há um serviço existente entre os dois usuários");
         }
 
         var servico = servicoRepository.getByUsers(freelancer, contratante);
         servico.setValorPagamento(valorPagamento);
-        servico.setEstado("Concluído");
+        servico.setStatus("Concluído");
 
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         String dataString = LocalDate.now().format(dateTimeFormatter);
@@ -74,13 +74,13 @@ public class ServicoService {
         Contratante contratante = contratanteRepository.findById(idContratante)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Contratante não identificado"));
 
-        if (!verificarServicoEmAndamento(freelancer, contratante)) {
+        if (!verificarServicoEmAndamento(idContratante, idFreelancer)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,
                     "Não há um serviço existente entre os dois usuários");
         }
 
         var servico = servicoRepository.getByUsers(freelancer, contratante);
-        servico.setEstado("Fechado");
+        servico.setStatus("Fechado");
 
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         String dataString = LocalDate.now().format(dateTimeFormatter);
@@ -89,7 +89,11 @@ public class ServicoService {
         servicoRepository.save(servico);
     }
 
-    public boolean verificarServicoEmAndamento(Freelancer f, Contratante c) {
-        return servicoRepository.existsByEstadoEmAndamento(f, c);
+    public boolean verificarServicoEmAndamento(Long idContratante, Long idFreelancer) {
+        Freelancer freelancer = freelancerRepository.findById(idFreelancer)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Freelancer não identificado"));
+        Contratante contratante = contratanteRepository.findById(idContratante)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Contratante não identificado"));
+        return servicoRepository.existsByEstadoEmAndamento(freelancer, contratante);
     }
 }

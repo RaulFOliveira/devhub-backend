@@ -162,7 +162,7 @@ public class FreelancerService {
                  .map(f -> new PerfilFreelancerDTO(
                          f.getId(), f.getNome(), f.getFuncao(),
                          f.getEspecialidades(), f.getValorHora(),
-                         f.getSenioridade(), f.getDescricao(),
+                         f.getSenioridade(), f.getDescricao(), f.getTelefone(),
                          f.getImagem(), avaliacaoRepo.calcularMediaNotas(f)
                  )).toList();
          return dtos;
@@ -177,7 +177,7 @@ public class FreelancerService {
                 .map(f -> new PerfilFreelancerDTO(
                         f.getId(), f.getNome(), f.getFuncao(),
                         f.getEspecialidades(), f.getValorHora(),
-                        f.getSenioridade(), f.getDescricao(),
+                        f.getSenioridade(), f.getDescricao(), f.getTelefone(),
                         f.getImagem(), avaliacaoRepo.calcularMediaNotas(f)
                 )).toList();
         return dtos;

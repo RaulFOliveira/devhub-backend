@@ -8,7 +8,6 @@ import com.devhub.api.domain.publicacao.dto.CreatePublicacaoDTO;
 import com.devhub.api.domain.publicacao.dto.DetailPublicacaoDTO;
 import com.devhub.api.domain.publicacao.Publicacao;
 import com.devhub.api.domain.publicacao.dto.ListaPublicacaoDTO;
-import com.devhub.api.domain.servico.CreateServicoDTO;
 import com.devhub.api.domain.servico.Servico;
 import com.devhub.api.domain.usuario.UserRole;
 import com.devhub.api.service.PublicacaoService;
