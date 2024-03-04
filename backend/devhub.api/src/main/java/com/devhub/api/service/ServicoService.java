@@ -4,8 +4,10 @@ import com.devhub.api.domain.contratante.Contratante;
 import com.devhub.api.domain.contratante.ContratanteRepository;
 import com.devhub.api.domain.freelancer.Freelancer;
 import com.devhub.api.domain.freelancer.FreelancerRepository;
+import com.devhub.api.domain.servico.FinishServicoDTO;
 import com.devhub.api.domain.servico.Servico;
 import com.devhub.api.domain.servico.ServicoRepository;
+import jakarta.transaction.Transactional;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -46,19 +48,19 @@ public class ServicoService {
         return servicoRepository.save(servico);
     }
 
-    public void concluirServico(Long idFreelancer, Long idContratante, Double valorPagamento) {
-        Freelancer freelancer = freelancerRepository.findById(idFreelancer)
+    public void concluirServico(FinishServicoDTO data) {
+        Freelancer freelancer = freelancerRepository.findById(data.idFreelancer())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Freelancer não identificado"));
-        Contratante contratante = contratanteRepository.findById(idContratante)
+        Contratante contratante = contratanteRepository.findById(data.idContratante())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Contratante não identificado"));
 
-        if (!verificarServicoEmAndamento(idContratante, idFreelancer)) {
+        if (!verificarServicoEmAndamento(data.idContratante(), data.idFreelancer())) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,
                     "Não há um serviço existente entre os dois usuários");
         }
 
         var servico = servicoRepository.getByUsers(freelancer, contratante);
-        servico.setValorPagamento(valorPagamento);
+        servico.setValorPagamento(data.valorHora());
         servico.setStatus("Concluído");
 
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");

@@ -56,6 +56,8 @@ public class SecurityConfiguration {
                     //SERVIÇO
                     req.requestMatchers("/servicos/**").permitAll();
                     req.requestMatchers("/servicos").permitAll();
+                    req.requestMatchers("/avaliacoes-freelancer/**").permitAll();
+
 
 
 

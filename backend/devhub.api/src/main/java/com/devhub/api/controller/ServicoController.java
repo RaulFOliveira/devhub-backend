@@ -7,6 +7,7 @@ import com.devhub.api.domain.freelancer.FreelancerRepository;
 import com.devhub.api.domain.funcao.Funcao;
 //import com.devhub.api.domain.servico.CreateServicoDTO;
 import com.devhub.api.domain.servico.DetailServicoDTO;
+import com.devhub.api.domain.servico.FinishServicoDTO;
 import com.devhub.api.domain.servico.Servico;
 import com.devhub.api.domain.servico.ServicoRepository;
 import com.devhub.api.service.ServicoService;
@@ -46,16 +47,16 @@ public class ServicoController {
     }
 
     @PatchMapping("/concluir")
-    public ResponseEntity concluirServico(@RequestParam Long idContratante,
-                                          @RequestParam Long idFreelancer,
-                                          @RequestBody Double valorPagamento) {
-        service.concluirServico(idContratante, idFreelancer, valorPagamento);
+    @Transactional
+    public ResponseEntity concluirServico(@RequestBody FinishServicoDTO data) {
+        service.concluirServico(data);
         return ResponseEntity.status(204).build();
     }
 
     @PatchMapping("/fechar")
-    public ResponseEntity fecharServico(@RequestParam Long idContratante,
-                                        @RequestParam Long idFreelancer) {
+    @Transactional
+    public ResponseEntity fecharServico(@RequestParam("idContratante")  Long idContratante,
+                                        @RequestParam("idFreelancer") Long idFreelancer) {
         service.fecharServico(idContratante, idFreelancer);
         return ResponseEntity.status(204).build();
     }
