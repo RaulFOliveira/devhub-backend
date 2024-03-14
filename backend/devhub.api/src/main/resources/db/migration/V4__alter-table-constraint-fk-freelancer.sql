@@ -1,0 +1,1 @@
+alter table especialidade add constraint fkFreelancer foreign key (fk_freelancer) references freelancer(id);
