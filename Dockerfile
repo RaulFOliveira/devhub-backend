@@ -1,5 +1,5 @@
 FROM eclipse-temurin:17-jdk-alpine
 WORKDIR /app
-COPY target/devhub-backend.jar devhub-backend.jar
+COPY target/Application.jar Application.jar
 EXPOSE 8080
-CMD ["java","-jar","devhub-backend.jar"]
+CMD ["java","-jar","Application.jar"]
