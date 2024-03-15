@@ -53,10 +53,12 @@ public class SecurityConfiguration {
                     req.requestMatchers("/especialidades/**").permitAll();
                     req.requestMatchers("/contratantes").permitAll();
                     req.requestMatchers("/freelancers").permitAll();
+                    req.requestMatchers("/h2-console").permitAll();
                     //SERVIÇO
                     req.requestMatchers("/servicos/**").permitAll();
                     req.requestMatchers("/servicos").permitAll();
                     req.requestMatchers("/avaliacoes-freelancer/**").permitAll();
+                    req.requestMatchers("/h2-console").permitAll();
 
 
 
