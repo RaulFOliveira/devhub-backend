@@ -16,7 +16,7 @@ public class CorsConfig implements WebMvcConfigurer {
     public CorsFilter  corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(Arrays.asList("*"));
+        config.setAllowedOrigins(Arrays.asList("http://34.228.14.149"));
         config.setAllowedMethods(Arrays.asList("GET","POST","PUT","DELETE","PATCH"));
         config.setAllowCredentials(true);
         config.addAllowedHeader("*");
@@ -28,6 +28,6 @@ public class CorsConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**").allowedOrigins("*").allowCredentials(true);
+        registry.addMapping("/**").allowedOrigins("http://34.228.14.149").allowCredentials(true);
     }
 }
