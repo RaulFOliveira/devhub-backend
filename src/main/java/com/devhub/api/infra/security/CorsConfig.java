@@ -1,4 +1,5 @@
 package com.devhub.api.infra.security;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -12,11 +13,15 @@ import java.util.Arrays;
 
 @Configuration
 public class CorsConfig implements WebMvcConfigurer {
+
+    @Value("${api.security.cors.ip}")
+    private String ipApplication;
+
     @Bean
     public CorsFilter  corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(Arrays.asList("http://34.228.14.149"));
+        config.setAllowedOrigins(Arrays.asList(ipApplication));
         config.setAllowedMethods(Arrays.asList("GET","POST","PUT","DELETE","PATCH"));
         config.setAllowCredentials(true);
         config.addAllowedHeader("*");
@@ -28,6 +33,6 @@ public class CorsConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**").allowedOrigins("http://34.228.14.149").allowCredentials(true);
+        registry.addMapping("/**").allowedOrigins(ipApplication).allowCredentials(true);
     }
 }
