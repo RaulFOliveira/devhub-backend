@@ -182,4 +182,8 @@ public class FreelancerService {
                 )).toList();
         return dtos;
     }
+
+    public byte[] getFoto(int codigo) {
+        return repository.getImagemById(codigo);
+    }
 }

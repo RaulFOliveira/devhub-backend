@@ -133,4 +133,9 @@ public class ContratanteService {
 
         return status;
     }
+
+    public byte[] getFoto(int codigo) {
+        var imagem = repository.getImagemById(codigo);
+        return imagem;
+    }
 }

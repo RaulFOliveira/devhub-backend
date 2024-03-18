@@ -1,13 +1,13 @@
 package com.devhub.api.domain.funcao;
 
 public enum Funcao {
-    DESENVOLVEDOR_BACKEND("DESENVOLVEDOR_BACKEND"),
-    DESENVOLVEDOR_FRONTEND("DESENVOLVEDOR_FRONTEND"),
-    DESENVOLVEDOR_FULLSTACK("DESENVOLVEDOR_FULLSTACK"),
-    BANCO_DE_DADOS("BANCO_DE_DADOS"),
-    PRODUCT_OWNER("PRODUCT_OWNER"),
-    QUALITY_ASSURANCE("QUALITY_ASSURANCE"),
-    WEB_DESIGNER("WEB_DESIGNER");
+    DESENVOLVEDOR_BACKEND("Desenvolvedor Back-end"),
+    DESENVOLVEDOR_FRONTEND("Desenvolvedor Front-end"),
+    DESENVOLVEDOR_FULLSTACK("Desenvolvedor Fullstack"),
+    BANCO_DE_DADOS("Banco de Dados"),
+    PRODUCT_OWNER("Product Owner"),
+    QUALITY_ASSURANCE("Quality Assurance"),
+    WEB_DESIGNER("Web Designer");
 
     private String funcao;
 

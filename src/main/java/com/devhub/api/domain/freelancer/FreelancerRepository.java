@@ -62,4 +62,9 @@ public interface FreelancerRepository extends JpaRepository<Freelancer, Long> {
         f.id <> :compareTo
     """)
     List<Freelancer> compareFreelancerBySpecialties(List<String> especialidades, Long compareTo);
+
+    @Query("""
+    select f.imagem from Freelancer f where f.id = ?1
+    """)
+    byte[] getImagemById(int codigo);
 }

@@ -114,4 +114,9 @@ public class ContratanteController {
                                           @RequestPart("image") MultipartFile novaFoto) throws IOException {
         return ResponseEntity.status(service.atualizarFoto(novaFoto, codigo)).build();
     }
+
+    @GetMapping(value = "/foto/{codigo}")
+    public ResponseEntity<byte[]> getFoto(@PathVariable int codigo) {
+        return ResponseEntity.status(200).body(service.getFoto(codigo));
+    }
 }

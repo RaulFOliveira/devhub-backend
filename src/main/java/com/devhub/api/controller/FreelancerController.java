@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -120,6 +121,11 @@ public class FreelancerController {
 //        freelancer.ativarConta();
 //        return ResponseEntity.noContent().build();
 //    }
+
+    @GetMapping(value = "/foto/{codigo}")
+    public ResponseEntity<byte[]> getFoto(@PathVariable int codigo) {
+        return ResponseEntity.status(200).body(service.getFoto(codigo));
+    }
 
     @PatchMapping(value = "/foto/{codigo}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> patchFoto(@PathVariable int codigo,
