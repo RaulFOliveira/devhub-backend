@@ -20,8 +20,8 @@ public class CorsConfig implements WebMvcConfigurer {
         config.setAllowedMethods(Arrays.asList("GET","POST","PUT","DELETE","PATCH"));
         config.setAllowCredentials(true);
         config.addAllowedHeader("*");
-//        config.applyPermitDefaultValues(); // Aplicar configurações padrão
-//        config.addAllowedOrigin("http://localhost:3000"); // Permitir a origem específica
+//        config.applyPermitDefaultValues();
+//        config.addAllowedOrigin("http://localhost:3000");
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
     }
