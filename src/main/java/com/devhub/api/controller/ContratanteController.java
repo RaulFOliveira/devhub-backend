@@ -7,6 +7,7 @@ import com.devhub.api.domain.contratante.dto.ListContratanteDTO;
 import com.devhub.api.domain.contratante.dto.UpdateContratanteDTO;
 import com.devhub.api.domain.freelancer.dto.PerfilFreelancerDTO;
 import com.devhub.api.service.ContratanteService;
+import com.devhub.api.service.EmailService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -35,6 +36,9 @@ public class ContratanteController {
     @Autowired
     private ContratanteService service;
 
+    @Autowired
+    private EmailService emailService;
+
     @Operation(summary = "Realiza a criação do Contratante", method = "POST")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Contratante criado com sucesso"),
@@ -46,6 +50,14 @@ public class ContratanteController {
     public ResponseEntity createContratante(@Valid @RequestBody CreateContratanteDTO data, UriComponentsBuilder uriBuilder) {
         var contratante = service.cadastrarContratante(data);
         var uri = uriBuilder.path("/contratantes/{id}").buildAndExpand(contratante.getId()).toUri();
+        String mensagem = "Olá " + data.nome() + ",\n\n" +
+                "Seja muito bem-vindo à plataforma DevHub!\n\n" +
+                "Estamos muito felizes em tê-lo conosco e gostaríamos de confirmar o seu cadastro em nossa plataforma.\n\n" +
+                "Se você tiver alguma dúvida ou precisar de assistência, não hesite em entrar em contato conosco.\n\n" +
+                "Esperamos que você aproveite ao máximo a sua experiência na DevHub!\n\n" +
+                "Atenciosamente,\n" +
+                "Equipe DevHub";
+        emailService.enviarEmailTexto(data.email(), "Seja bem vindo a DevHub", mensagem);
         return ResponseEntity.created(uri).body(new DetailContratanteDTO(contratante));
     }
 

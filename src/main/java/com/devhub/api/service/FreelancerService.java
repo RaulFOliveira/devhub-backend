@@ -106,7 +106,7 @@ public class FreelancerService {
         }
         var freelancer = freelancerOpt.get();
         PerfilFreelancerDTO dto = new PerfilFreelancerDTO(
-                freelancer.getId(), freelancer.getNome(), freelancer.getFuncao(),
+                freelancer.getId(), freelancer.getNome(), freelancer.getEmail(), freelancer.getFuncao(),
                 freelancer.getEspecialidades(), freelancer.getValorHora(),
                 freelancer.getSenioridade(), freelancer.getDescricao(), freelancer.getTelefone(),
                 freelancer.getImagem(), avaliacaoRepo.calcularMediaNotas(freelancer)
@@ -160,7 +160,7 @@ public class FreelancerService {
          List<Freelancer> freelancers = repository.getFreelancersBySearch(pesquisa);
          List<PerfilFreelancerDTO> dtos = freelancers.stream()
                  .map(f -> new PerfilFreelancerDTO(
-                         f.getId(), f.getNome(), f.getFuncao(),
+                         f.getId(), f.getNome(), f.getEmail(), f.getFuncao(),
                          f.getEspecialidades(), f.getValorHora(),
                          f.getSenioridade(), f.getDescricao(), f.getTelefone(),
                          f.getImagem(), avaliacaoRepo.calcularMediaNotas(f)
@@ -175,7 +175,7 @@ public class FreelancerService {
         var freelancers = repository.compareFreelancerBySpecialties(especialidades, compareTo);
         List<PerfilFreelancerDTO> dtos = freelancers.stream()
                 .map(f -> new PerfilFreelancerDTO(
-                        f.getId(), f.getNome(), f.getFuncao(),
+                        f.getId(), f.getNome(), f.getEmail(), f.getFuncao(),
                         f.getEspecialidades(), f.getValorHora(),
                         f.getSenioridade(), f.getDescricao(), f.getTelefone(),
                         f.getImagem(), avaliacaoRepo.calcularMediaNotas(f)
