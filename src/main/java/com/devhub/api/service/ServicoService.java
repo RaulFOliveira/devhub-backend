@@ -59,7 +59,7 @@ public class ServicoService {
                     "Não há um serviço existente entre os dois usuários");
         }
 
-        var servico = servicoRepository.getByUsers(freelancer, contratante);
+        Servico servico = servicoRepository.getByUsers(freelancer, contratante);
         servico.setValorPagamento(data.valorHora());
         servico.setStatus("Concluído");
 

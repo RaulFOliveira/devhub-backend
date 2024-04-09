@@ -3,6 +3,7 @@ package com.devhub.api.controller;
 import com.devhub.api.domain.especialidade.EspecialidadeDTO;
 import com.devhub.api.domain.freelancer.*;
 import com.devhub.api.domain.freelancer.dto.*;
+import com.devhub.api.service.EmailService;
 import com.devhub.api.service.FreelancerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -33,6 +34,9 @@ public class FreelancerController {
     @Autowired
     private FreelancerService service;
 
+    @Autowired
+    private EmailService emailService;
+
     @Operation(summary = "Realiza a criaçâo do freelancer", method = "POST")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Freelancer criado com sucesso"),
@@ -44,6 +48,14 @@ public class FreelancerController {
     public ResponseEntity createFreelancer(@Valid @RequestBody CreateFreelancerDTO data, UriComponentsBuilder uriBuilder) {
         var freelancer = service.cadastrarFreelancer(data);
         var uri = uriBuilder.path("/freelancers/{id}").buildAndExpand(freelancer.getId()).toUri();
+        String mensagem = "Olá " + data.nome() + ",\n\n" +
+                "Seja muito bem-vindo à plataforma DevHub!\n\n" +
+                "Estamos muito felizes em tê-lo conosco e gostaríamos de confirmar o seu cadastro em nossa plataforma.\n\n" +
+                "Se você tiver alguma dúvida ou precisar de assistência, não hesite em entrar em contato conosco.\n\n" +
+                "Esperamos que você aproveite ao máximo a sua experiência na DevHub!\n\n" +
+                "Atenciosamente,\n" +
+                "Equipe DevHub";
+        emailService.enviarEmailTexto(data.email(), "Seja bem vindo a DevHub", mensagem);
         return ResponseEntity.created(uri).body(freelancer);
     }
 
