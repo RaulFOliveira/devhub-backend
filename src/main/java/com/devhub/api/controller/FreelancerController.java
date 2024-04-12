@@ -18,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -37,7 +38,7 @@ public class FreelancerController {
     @Autowired
     private EmailService emailService;
 
-    @Operation(summary = "Realiza a criaçâo do freelancer", method = "POST")
+    @Operation(summary = "Realiza a criação do Freelancer", method = "POST")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Freelancer criado com sucesso"),
             @ApiResponse(responseCode = "422", description = "Dados de requisição inválida"),
@@ -47,7 +48,13 @@ public class FreelancerController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity createFreelancer(@Valid @RequestBody CreateFreelancerDTO data, UriComponentsBuilder uriBuilder) {
         var freelancer = service.cadastrarFreelancer(data);
+        enviarEmailAssincrono(data);
         var uri = uriBuilder.path("/freelancers/{id}").buildAndExpand(freelancer.getId()).toUri();
+        return ResponseEntity.created(uri).body(freelancer);
+    }
+
+    @Async
+    public void enviarEmailAssincrono(CreateFreelancerDTO data) {
         String mensagem = "Olá " + data.nome() + ",\n\n" +
                 "Seja muito bem-vindo à plataforma DevHub!\n\n" +
                 "Estamos muito felizes em tê-lo conosco e gostaríamos de confirmar o seu cadastro em nossa plataforma.\n\n" +
@@ -56,7 +63,6 @@ public class FreelancerController {
                 "Atenciosamente,\n" +
                 "Equipe DevHub";
         emailService.enviarEmailTexto(data.email(), "Seja bem vindo a DevHub", mensagem);
-        return ResponseEntity.created(uri).body(freelancer);
     }
 
     @PostMapping("/{id}/especialidades")

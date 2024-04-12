@@ -20,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -49,7 +50,13 @@ public class ContratanteController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity createContratante(@Valid @RequestBody CreateContratanteDTO data, UriComponentsBuilder uriBuilder) {
         var contratante = service.cadastrarContratante(data);
+        enviarEmailAssincrono(data);
         var uri = uriBuilder.path("/contratantes/{id}").buildAndExpand(contratante.getId()).toUri();
+        return ResponseEntity.created(uri).body(new DetailContratanteDTO(contratante));
+    }
+
+    @Async
+    public void enviarEmailAssincrono(CreateContratanteDTO data) {
         String mensagem = "Olá " + data.nome() + ",\n\n" +
                 "Seja muito bem-vindo à plataforma DevHub!\n\n" +
                 "Estamos muito felizes em tê-lo conosco e gostaríamos de confirmar o seu cadastro em nossa plataforma.\n\n" +
@@ -58,7 +65,6 @@ public class ContratanteController {
                 "Atenciosamente,\n" +
                 "Equipe DevHub";
         emailService.enviarEmailTexto(data.email(), "Seja bem vindo a DevHub", mensagem);
-        return ResponseEntity.created(uri).body(new DetailContratanteDTO(contratante));
     }
 
     @Operation(summary = "Realiza a listagenm dos Contratantes", method = "GET")
