@@ -50,7 +50,7 @@ public class FreelancerController {
         var freelancer = service.cadastrarFreelancer(data);
         enviarEmailAssincrono(data);
         var uri = uriBuilder.path("/freelancers/{id}").buildAndExpand(freelancer.getId()).toUri();
-        return ResponseEntity.created(uri).body(freelancer);
+        return ResponseEntity.created(uri).body(new DetailFreelancerDTO(freelancer));
     }
 
     @Async
