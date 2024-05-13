@@ -47,7 +47,6 @@ public class ContratanteService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, camposJaCadastrados);
         }
 
-
         var contratante = new Contratante(data);
 
         String encryptedPassword = new BCryptPasswordEncoder().encode(data.senha());

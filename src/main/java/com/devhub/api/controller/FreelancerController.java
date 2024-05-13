@@ -19,6 +19,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -30,6 +31,7 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/freelancers")
 @Tag(name = "Api DevHub")
+@EnableAsync
 public class FreelancerController {
 
     @Autowired
@@ -50,7 +52,7 @@ public class FreelancerController {
         var freelancer = service.cadastrarFreelancer(data);
         enviarEmailAssincrono(data);
         var uri = uriBuilder.path("/freelancers/{id}").buildAndExpand(freelancer.getId()).toUri();
-        return ResponseEntity.created(uri).body(freelancer);
+        return ResponseEntity.created(uri).body(new DetailFreelancerDTO(freelancer));
     }
 
     @Async

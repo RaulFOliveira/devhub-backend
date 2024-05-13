@@ -1,9 +1,10 @@
 package com.devhub.api.domain.contratante.dto;
 
 import com.devhub.api.domain.contratante.Contratante;
+import com.devhub.api.domain.usuario.UserRole;
 
 public record DetailContratanteDTO(Long id, String nome, String cnpj, String telefone, String email,
-                                   Integer contratacoes, Boolean ativo) {
+                                   Integer contratacoes, UserRole role, Boolean ativo) {
 
     public DetailContratanteDTO(Contratante contratante) {
         this(
@@ -13,6 +14,7 @@ public record DetailContratanteDTO(Long id, String nome, String cnpj, String tel
                 contratante.getTelefone(),
                 contratante.getEmail(),
                 contratante.getContratacoes(),
+                contratante.getRole(),
                 contratante.getAtivo());
     }
 }
