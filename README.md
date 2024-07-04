@@ -6,6 +6,7 @@ A Devhub é uma empresa fictícia criada com o foco em ajudar o mercado de tecno
 
 ## Funcionalidades
 - Cadastro de Freelancer/Contratante
+- Autenticação
 - Feed de publicações
 - Benchmarking entre freelancers
 - Contratação de serviço
