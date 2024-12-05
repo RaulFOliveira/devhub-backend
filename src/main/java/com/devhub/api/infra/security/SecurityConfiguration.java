@@ -39,25 +39,15 @@ public class SecurityConfiguration {
                     req.requestMatchers(HttpMethod.POST, "/contratantes").permitAll();
                     //ENCERRAMENTO DE SERVICO
                     req.requestMatchers(HttpMethod.POST, "/servicos").hasRole("CONTRATANTE");
-                    //PUBLICACOES
-                    req.requestMatchers(HttpMethod.POST, "/publicacoes/*").permitAll();
-                    req.requestMatchers(HttpMethod.DELETE, "/publicacoes/*").permitAll();
-                    req.requestMatchers(HttpMethod.GET, "/publicacoes").permitAll();
+                    req.requestMatchers("/servicos/**").permitAll();
                     //SWAGGER
                     req.requestMatchers(HttpMethod.GET, "/swagger-ui/**").permitAll();
                     req.requestMatchers("/v3/api-docs/**").permitAll();
                     req.requestMatchers("/swagger-resources/**").permitAll();
 
-                    req.requestMatchers("/contratantes/**").permitAll();
-                    req.requestMatchers("/freelancers/**").permitAll();
-                    req.requestMatchers("/especialidades/**").permitAll();
-                    req.requestMatchers("/contratantes").permitAll();
-                    req.requestMatchers("/freelancers").permitAll();
                     req.requestMatchers("/h2").permitAll();
                     //SERVIÇO
-                    req.requestMatchers("/servicos/**").permitAll();
-                    req.requestMatchers("/servicos").permitAll();
-                    req.requestMatchers("/avaliacoes-freelancer/**").permitAll();
+                    req.requestMatchers("/avaliacoes-freelancer/**").hasRole("CONTRATANTE");
                     req.requestMatchers("/h2-console").permitAll();
 
                     req.anyRequest().authenticated();
